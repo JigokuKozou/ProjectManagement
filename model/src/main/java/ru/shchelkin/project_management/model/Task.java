@@ -21,7 +21,7 @@ public class Task {
 
     private TeamMember executor;
 
-    private Integer estimate_hours;
+    private Integer estimateHours;
 
     private LocalDateTime deadLineDate;
 
