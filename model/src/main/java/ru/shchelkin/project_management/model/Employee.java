@@ -11,7 +11,7 @@ import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 @NoArgsConstructor
 @Builder
 public class Employee {
-    private Long accountId;
+    private Long id;
 
     private String surname;
 
