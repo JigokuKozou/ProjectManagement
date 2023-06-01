@@ -17,4 +17,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>ru.shchelkin</groupId>
+            <artifactId>model</artifactId>
+            <version>${revision}${changeList}</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -17,4 +17,17 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>ru.shchelkin</groupId>
+            <artifactId>dto</artifactId>
+            <version>${revision}${changeList}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.shchelkin</groupId>
+            <artifactId>dao</artifactId>
+            <version>${revision}${changeList}</version>
+        </dependency>
+    </dependencies>
+
 </project>
