@@ -10,7 +10,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectTeam {
-    private String projectCodeName;
+    private Project project;
 
     private Set<TeamMember> members;
 }
