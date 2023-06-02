@@ -23,7 +23,7 @@ public class Task {
 
     private Integer estimateHours;
 
-    private LocalDateTime deadLineDate;
+    private LocalDateTime deadline;
 
     private TaskStatus status;
 
