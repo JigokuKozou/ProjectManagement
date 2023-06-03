@@ -35,7 +35,7 @@ CREATE TABLE project (
 );
 
 CREATE TABLE task (
-    id SERIAL,
+    id BIGSERIAL,
     name VARCHAR(100) NOT NULL,
     description TEXT NULL,
     executor_id BIGINT NULL,
