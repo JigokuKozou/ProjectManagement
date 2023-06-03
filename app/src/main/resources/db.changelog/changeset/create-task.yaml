@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-task
+      author: IlyaShchelkin
+      changes:
+        - createTable:
+            tableName: employee
+            columns:
+              - column:
+                name: id
+                type: BIGSERIAL
+                constraints:
+                  primaryKey: true
+              - column:
+                name: name
+                type: VARCHAR(100)
+                constraints:
+                  nullable: false
+              - column:
+                name: description
+                type: TEXT
+                constraints:
+                  nullable: true
+              - column:
+                name: executor_id
+                type: BIGINT
+                constraints:
+                  nullable: true
+              - column:
+                name: estimate_hours
+                type: INT
+                constraints:
+                  checkConstraint: "estimate_hours >= 0"
+                  nullable: false
+              - column:
+                  name: deadline
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+            foreignKeys:
+              - foreignKey:
+                  name: task_executor_fk
+                  referencedTableName: team_member
+                  referencedColumnName: id
+                  baseColumnNames: executor_id
+              - foreignKey:
+                  constraintName: task_author_fk
+                  referencedTableName: team_member
+                  referencedColumnNames: id
+                  baseColumnNames: author_id
