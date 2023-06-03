@@ -5,7 +5,7 @@ import ru.shchelkin.project_management.business.service.employee.impl.EmployeeSe
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 import ru.shchelkin.project_management.controller.employee.EmployeeController;
 import ru.shchelkin.project_management.dao.Dao;
-import ru.shchelkin.project_management.dao.employee.impl.EmployeeDataStorage;
+import ru.shchelkin.project_management.dao.employee.impl.EmployeeJdbcDao;
 import ru.shchelkin.project_management.dto.request.employee.CreateEmployeeDto;
 import ru.shchelkin.project_management.dto.request.employee.DeleteEmployeeDto;
 import ru.shchelkin.project_management.dto.request.employee.GetEmployeeByIdDto;
@@ -14,7 +14,7 @@ import ru.shchelkin.project_management.model.Employee;
 
 public class Main {
     public static void main(String[] args) {
-        Dao<Employee> dao = new EmployeeDataStorage();
+        Dao<Employee> dao = new EmployeeJdbcDao();
         EmployeeService service = new EmployeeServiceDao(dao);
         EmployeeController controller = new EmployeeController(service);
 
@@ -56,7 +56,8 @@ public class Main {
         // ------------------ Delete -------------------------------------
         final DeleteEmployeeDto deleteEmployeeDto = new DeleteEmployeeDto(createdEmployee.getId());
         controller.delete(deleteEmployeeDto);
-        System.out.println("Удален \n" + controller.getAll());
+        System.out.println("Удален");
+        controller.getAll().forEach(System.out::println);
         // ----------------------------------------------------------------
     }
 }

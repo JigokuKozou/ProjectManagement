@@ -23,5 +23,11 @@
             <artifactId>model</artifactId>
             <version>${revision}${changeList}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.4</version>
+        </dependency>
     </dependencies>
 </project>
