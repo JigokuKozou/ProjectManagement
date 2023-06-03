@@ -2,6 +2,7 @@ package ru.shchelkin.project_management.controller.employee;
 
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
 import ru.shchelkin.project_management.dto.request.employee.*;
+import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
 import ru.shchelkin.project_management.dto.response.employee.EmployeeCardDto;
 
 import java.util.List;
@@ -19,6 +20,10 @@ public class EmployeeController {
 
     public List<EmployeeCardDto> getAll() {
         return employeeService.getAll();
+    }
+
+    public List<EmployeeCardDto> getAll(FilterEmployeeByTeamRoleDto filterDao) {
+        return employeeService.getAll(filterDao);
     }
 
     public List<EmployeeCardDto> search(SearchEmployeeDto searchEmployeeDto) {

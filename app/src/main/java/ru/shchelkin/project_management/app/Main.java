@@ -2,23 +2,24 @@ package ru.shchelkin.project_management.app;
 
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
 import ru.shchelkin.project_management.business.service.employee.impl.EmployeeServiceDao;
+import ru.shchelkin.project_management.commons.role.TeamRole;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 import ru.shchelkin.project_management.controller.employee.EmployeeController;
-import ru.shchelkin.project_management.dao.Dao;
-import ru.shchelkin.project_management.dao.employee.impl.EmployeeDataStorage;
+import ru.shchelkin.project_management.dao.employee.impl.EmployeeDao;
+import ru.shchelkin.project_management.dao.employee.impl.EmployeeJdbcDao;
 import ru.shchelkin.project_management.dto.request.employee.CreateEmployeeDto;
 import ru.shchelkin.project_management.dto.request.employee.DeleteEmployeeDto;
 import ru.shchelkin.project_management.dto.request.employee.GetEmployeeByIdDto;
 import ru.shchelkin.project_management.dto.request.employee.UpdateEmployeeDto;
-import ru.shchelkin.project_management.model.Employee;
+import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
 
 public class Main {
     public static void main(String[] args) {
-        Dao<Employee> dao = new EmployeeDataStorage();
+        EmployeeDao dao = new EmployeeJdbcDao();
         EmployeeService service = new EmployeeServiceDao(dao);
         EmployeeController controller = new EmployeeController(service);
 
-        // ---------------- Create ----------------------------------
+        // ---------------- Create ---------------------------------------
         final CreateEmployeeDto createEmployeeDto = new CreateEmployeeDto();
         createEmployeeDto.setSurname("Иванов");
         createEmployeeDto.setName("Иван");
@@ -31,14 +32,14 @@ public class Main {
         var createdEmployee = controller.create(createEmployeeDto);
         System.out.println("Созданный сотрудник \n" + createdEmployee);
 
-        // ---------------- Get by id --------------------------------------
+        // ---------------- Get by id ------------------------------------
         final GetEmployeeByIdDto getEmployeeByIdDto = new GetEmployeeByIdDto();
         getEmployeeByIdDto.setId(createdEmployee.getId());
 
         var getByIdEmployee = controller.getById(getEmployeeByIdDto);
         System.out.println("Получение по id \n" + getByIdEmployee);
 
-        // ---------------- Update --------------------------------------
+        // ---------------- Update ---------------------------------------
         final UpdateEmployeeDto updateEmployeeDto = new UpdateEmployeeDto();
         updateEmployeeDto.setId(createdEmployee.getId());
         updateEmployeeDto.setSurname("Иванов");
@@ -56,7 +57,17 @@ public class Main {
         // ------------------ Delete -------------------------------------
         final DeleteEmployeeDto deleteEmployeeDto = new DeleteEmployeeDto(createdEmployee.getId());
         controller.delete(deleteEmployeeDto);
-        System.out.println("Удален \n" + controller.getAll());
-        // ----------------------------------------------------------------
+        System.out.println("Удален");
+        controller.getAll().forEach(System.out::println);
+
+        // ------------------ Filter DAO ---------------------------------
+        final var filterDao = new FilterEmployeeByTeamRoleDto();
+        filterDao.setProjectCodeName("projectA");
+        filterDao.setTeamRole(TeamRole.DEVELOPER);
+
+        System.out.println("\nПоиск по проекту: '" + filterDao.getProjectCodeName() + "' " +
+                "и роли в команде: " + filterDao.getTeamRole());
+        controller.getAll(filterDao).forEach(System.out::println);
+        // ---------------------------------------------------------------
     }
 }

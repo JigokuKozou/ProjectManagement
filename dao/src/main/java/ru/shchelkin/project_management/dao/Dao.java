@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface Dao<T> {
-    void create(T newEntity);
+    void create(T entity);
 
     void update(T updated);
 
