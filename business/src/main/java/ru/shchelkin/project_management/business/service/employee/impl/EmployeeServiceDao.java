@@ -2,8 +2,9 @@ package ru.shchelkin.project_management.business.service.employee.impl;
 
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
-import ru.shchelkin.project_management.dao.Dao;
+import ru.shchelkin.project_management.dao.employee.impl.EmployeeDao;
 import ru.shchelkin.project_management.dto.request.employee.*;
+import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
 import ru.shchelkin.project_management.dto.response.employee.EmployeeCardDto;
 import ru.shchelkin.project_management.model.Employee;
 
@@ -11,9 +12,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class EmployeeServiceDao implements EmployeeService {
-    private final Dao<Employee> dao;
+    private final EmployeeDao dao;
 
-    public EmployeeServiceDao(Dao<Employee> dao) {
+    public EmployeeServiceDao(EmployeeDao dao) {
         this.dao = dao;
     }
 
@@ -43,6 +44,11 @@ public class EmployeeServiceDao implements EmployeeService {
     @Override
     public List<EmployeeCardDto> getAll(SearchEmployeeDto searchEmployeeDto) {
         throw new RuntimeException(); // TODO реализовать
+    }
+
+    @Override
+    public List<EmployeeCardDto> getAll(FilterEmployeeByTeamRoleDto filterDao) {
+        return dao.getAll(filterDao).stream().map(EmployeeCardDto::new).toList();
     }
 
     @Override

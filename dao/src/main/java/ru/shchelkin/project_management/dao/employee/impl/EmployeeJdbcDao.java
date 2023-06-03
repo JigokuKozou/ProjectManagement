@@ -2,7 +2,7 @@ package ru.shchelkin.project_management.dao.employee.impl;
 
 import lombok.NonNull;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
-import ru.shchelkin.project_management.dao.Dao;
+import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
 import ru.shchelkin.project_management.model.Employee;
 
 import java.sql.*;
@@ -13,8 +13,8 @@ import java.util.Optional;
 
 import static ru.shchelkin.project_management.dao.employee.connector.DatabaseConnector.getConnection;
 
-public class EmployeeJdbcDao implements Dao<Employee> {
-    private static final String TABLE_NAME = "employee";
+public class EmployeeJdbcDao implements EmployeeDao {
+    public static final String TABLE_NAME = "employee";
 
     @Override
     public void create(@NonNull Employee employee) {
@@ -102,26 +102,36 @@ public class EmployeeJdbcDao implements Dao<Employee> {
         }
     }
 
-    private static Employee getEmployeeFromResultSet(ResultSet result) throws SQLException {
-        return Employee.builder()
-                .id(result.getLong(1))
-                .surname(result.getString(2))
-                .name(result.getString(3))
-                .patronymic(result.getString(4))
-                .jobTitle(result.getString(5))
-                .email(result.getString(6))
-                .status(EmployeeStatus.values()[result.getInt(7)])
-                .login(result.getString(8))
-                .password(result.getString(9))
-                .build();
-    }
-
     @Override
     public List<Employee> getAll() {
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
                     "SELECT id, surname, name, patronymic, job_title, email, status, login, password " +
                             "FROM " + TABLE_NAME);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            List<Employee> result = new ArrayList<>();
+            while (resultSet.next())
+                result.add(getEmployeeFromResultSet(resultSet));
+
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException("Getting error", e);
+        }
+    }
+
+    @Override
+    public List<Employee> getAll(FilterEmployeeByTeamRoleDto filterDao) {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT e.id, e.surname, e.name, e.patronymic, e.job_title, " +
+                            "e.email, e.status, e.login, e.password " +
+                            "FROM " + TABLE_NAME +" e JOIN team_member tm ON e.id = tm.employee_id " +
+                            "JOIN project_team pt ON tm.team_id = pt.id " +
+                            "JOIN project p on pt.project_id = p.id " +
+                            "WHERE p.code_name = '" + filterDao.getProjectCodeName() + "' " +
+                            "AND tm.role=" + filterDao.getTeamRole().ordinal());
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -149,5 +159,19 @@ public class EmployeeJdbcDao implements Dao<Employee> {
         } catch (SQLException e) {
             throw new RuntimeException("Deleting error", e);
         }
+    }
+
+    public static Employee getEmployeeFromResultSet(ResultSet result) throws SQLException {
+        return Employee.builder()
+                .id(result.getLong(1))
+                .surname(result.getString(2))
+                .name(result.getString(3))
+                .patronymic(result.getString(4))
+                .jobTitle(result.getString(5))
+                .email(result.getString(6))
+                .status(EmployeeStatus.valueOf(result.getInt(7)))
+                .login(result.getString(8))
+                .password(result.getString(9))
+                .build();
     }
 }
