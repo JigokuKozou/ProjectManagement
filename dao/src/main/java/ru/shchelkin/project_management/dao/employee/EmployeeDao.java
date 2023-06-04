@@ -1,4 +1,4 @@
-package ru.shchelkin.project_management.dao.employee.impl;
+package ru.shchelkin.project_management.dao.employee;
 
 import ru.shchelkin.project_management.dao.Dao;
 import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;

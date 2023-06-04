@@ -2,6 +2,7 @@ package ru.shchelkin.project_management.dao.employee.impl;
 
 import lombok.NonNull;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
+import ru.shchelkin.project_management.dao.employee.EmployeeDao;
 import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
 import ru.shchelkin.project_management.model.Employee;
 

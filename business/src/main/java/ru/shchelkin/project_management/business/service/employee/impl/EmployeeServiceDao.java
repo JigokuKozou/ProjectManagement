@@ -2,7 +2,7 @@ package ru.shchelkin.project_management.business.service.employee.impl;
 
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
-import ru.shchelkin.project_management.dao.employee.impl.EmployeeDao;
+import ru.shchelkin.project_management.dao.employee.EmployeeDao;
 import ru.shchelkin.project_management.dto.request.employee.*;
 import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
 import ru.shchelkin.project_management.dto.response.employee.EmployeeCardDto;
