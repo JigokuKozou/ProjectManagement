@@ -1,6 +1,7 @@
 package ru.shchelkin.project_management.model;
 
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,12 +10,24 @@ import ru.shchelkin.project_management.commons.role.TeamRole;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "team_member")
 public class TeamMember {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    private Employee member;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
+    @ManyToOne
+    @JoinColumn(name = "team_id", referencedColumnName = "id")
     private ProjectTeam team;
 
+    @Column(name = "role")
+    @Enumerated(EnumType.ORDINAL)
     private TeamRole role;
 }

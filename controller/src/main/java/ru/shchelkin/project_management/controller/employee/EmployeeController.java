@@ -1,5 +1,6 @@
 package ru.shchelkin.project_management.controller.employee;
 
+import org.springframework.stereotype.Controller;
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
 import ru.shchelkin.project_management.dto.request.employee.*;
 import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
@@ -7,6 +8,7 @@ import ru.shchelkin.project_management.dto.response.employee.EmployeeCardDto;
 
 import java.util.List;
 
+@Controller
 public class EmployeeController {
     private final EmployeeService employeeService;
 
@@ -26,7 +28,7 @@ public class EmployeeController {
         return employeeService.getAll(filterDao);
     }
 
-    public List<EmployeeCardDto> search(SearchEmployeeDto searchEmployeeDto) {
+    public List<EmployeeCardDto> getAll(SearchEmployeeDto searchEmployeeDto) {
         return employeeService.getAll(searchEmployeeDto);
     }
 

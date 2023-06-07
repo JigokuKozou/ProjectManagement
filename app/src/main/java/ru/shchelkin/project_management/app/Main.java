@@ -1,24 +1,30 @@
 package ru.shchelkin.project_management.app;
 
-import ru.shchelkin.project_management.business.service.employee.EmployeeService;
-import ru.shchelkin.project_management.business.service.employee.impl.EmployeeServiceDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ru.shchelkin.project_management.commons.role.TeamRole;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 import ru.shchelkin.project_management.controller.employee.EmployeeController;
-import ru.shchelkin.project_management.dao.employee.impl.EmployeeDao;
-import ru.shchelkin.project_management.dao.employee.impl.EmployeeJdbcDao;
-import ru.shchelkin.project_management.dto.request.employee.CreateEmployeeDto;
-import ru.shchelkin.project_management.dto.request.employee.DeleteEmployeeDto;
-import ru.shchelkin.project_management.dto.request.employee.GetEmployeeByIdDto;
-import ru.shchelkin.project_management.dto.request.employee.UpdateEmployeeDto;
+import ru.shchelkin.project_management.dto.request.employee.*;
 import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
 
-public class Main {
-    public static void main(String[] args) {
-        EmployeeDao dao = new EmployeeJdbcDao();
-        EmployeeService service = new EmployeeServiceDao(dao);
-        EmployeeController controller = new EmployeeController(service);
+@SpringBootApplication
+public class Main implements CommandLineRunner {
+    private final EmployeeController employeeController;
 
+    @Autowired
+    public Main(EmployeeController employeeController) {
+        this.employeeController = employeeController;
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);
+    }
+
+    @Override
+    public void run(String... args) {
         // ---------------- Create ---------------------------------------
         final CreateEmployeeDto createEmployeeDto = new CreateEmployeeDto();
         createEmployeeDto.setSurname("Иванов");
@@ -29,14 +35,14 @@ public class Main {
         createEmployeeDto.setLogin("ivanov");
         createEmployeeDto.setPassword("12345678");
 
-        var createdEmployee = controller.create(createEmployeeDto);
+        var createdEmployee = employeeController.create(createEmployeeDto);
         System.out.println("Созданный сотрудник \n" + createdEmployee);
 
         // ---------------- Get by id ------------------------------------
         final GetEmployeeByIdDto getEmployeeByIdDto = new GetEmployeeByIdDto();
         getEmployeeByIdDto.setId(createdEmployee.getId());
 
-        var getByIdEmployee = controller.getById(getEmployeeByIdDto);
+        var getByIdEmployee = employeeController.getById(getEmployeeByIdDto);
         System.out.println("Получение по id \n" + getByIdEmployee);
 
         // ---------------- Update ---------------------------------------
@@ -51,14 +57,14 @@ public class Main {
         updateEmployeeDto.setPassword("12345678");
         updateEmployeeDto.setStatus(EmployeeStatus.ACTIVE);
 
-        var updatedEmployee = controller.update(updateEmployeeDto);
+        var updatedEmployee = employeeController.update(updateEmployeeDto);
         System.out.println("Обновлен созданный\n" + updatedEmployee);
 
         // ------------------ Delete -------------------------------------
         final DeleteEmployeeDto deleteEmployeeDto = new DeleteEmployeeDto(createdEmployee.getId());
-        controller.delete(deleteEmployeeDto);
+        employeeController.delete(deleteEmployeeDto);
         System.out.println("Удален");
-        controller.getAll().forEach(System.out::println);
+        employeeController.getAll().forEach(System.out::println);
 
         // ------------------ Filter DAO ---------------------------------
         final var filterDao = new FilterEmployeeByTeamRoleDto();
@@ -67,7 +73,17 @@ public class Main {
 
         System.out.println("\nПоиск по проекту: '" + filterDao.getProjectCodeName() + "' " +
                 "и роли в команде: " + filterDao.getTeamRole());
-        controller.getAll(filterDao).forEach(System.out::println);
+        employeeController.getAll(filterDao).forEach(System.out::println);
+
+        final var searchDto = new SearchEmployeeDto();
+        searchDto.setSurname(null);
+        searchDto.setName(null);
+        searchDto.setPatronymic(null);
+        searchDto.setEmail("@gmail.com");
+        searchDto.setLogin(null);
+
+        System.out.println("\nПоиск по: " + searchDto);
+        employeeController.getAll(searchDto).forEach(System.out::println);
         // ---------------------------------------------------------------
     }
 }
