@@ -1,19 +1,20 @@
 package ru.shchelkin.project_management.dto.request.employee;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import ru.shchelkin.project_management.model.Employee;
 
 @Getter
 @Setter
 public class CreateEmployeeDto {
-    @NotEmpty(message = "Surname should not be empty")
+    @NotBlank(message = "Surname should not be blank")
     @Size(max = 30, message = "Surname should not be more than 30 symbols")
     private String surname;
 
-    @NotEmpty(message = "Name should not be empty")
+    @NotBlank(message = "Name should not be blank")
     @Size(max = 20, message = "Name should not be more than 20 symbols")
     private String name;
 
@@ -32,4 +33,16 @@ public class CreateEmployeeDto {
 
     @Size(max = 128, message = "Password should not be more than 128 symbols")
     private String password;
+
+    public Employee toEmployee() {
+        return Employee.builder()
+                .surname(surname)
+                .name(name)
+                .patronymic(patronymic)
+                .jobTitle(jobTitle)
+                .email(email)
+                .login(login)
+                .password(password)
+                .build();
+    }
 }

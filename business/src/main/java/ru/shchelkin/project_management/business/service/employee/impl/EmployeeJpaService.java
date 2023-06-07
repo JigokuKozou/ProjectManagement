@@ -3,7 +3,7 @@ package ru.shchelkin.project_management.business.service.employee.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
-import ru.shchelkin.project_management.business.util.mapper.EmployeeDtoMapper;
+import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 import ru.shchelkin.project_management.dao.employee.EmployeeRepository;
 import ru.shchelkin.project_management.dao.employee.specification.EmployeeSpecification;
 import ru.shchelkin.project_management.dto.request.employee.*;
@@ -27,7 +27,8 @@ public class EmployeeJpaService implements EmployeeService {
 
     @Override
     public EmployeeCardDto create(CreateEmployeeDto createEmployeeDto) {
-        Employee employee = EmployeeDtoMapper.toEmployee(createEmployeeDto);
+        Employee employee = createEmployeeDto.toEmployee();
+        employee.setStatus(EmployeeStatus.ACTIVE);
 
         return new EmployeeCardDto(repository.save(employee));
     }
@@ -62,7 +63,7 @@ public class EmployeeJpaService implements EmployeeService {
 
     @Override
     public EmployeeCardDto update(UpdateEmployeeDto updateEmployeeDto) {
-        Employee employee = EmployeeDtoMapper.toEmployee(updateEmployeeDto);
+        Employee employee = updateEmployeeDto.toEmployee();
 
         return new EmployeeCardDto(repository.save(employee));
     }
