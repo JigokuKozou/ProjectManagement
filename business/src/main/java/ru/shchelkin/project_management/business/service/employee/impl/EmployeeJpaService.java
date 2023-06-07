@@ -61,8 +61,8 @@ public class EmployeeJpaService implements EmployeeService {
     }
 
     @Override
-    public EmployeeCardDto update(PutEmployeeDto putEmployeeDto) {
-        Employee employee = EmployeeDtoMapper.toEmployee(putEmployeeDto);
+    public EmployeeCardDto update(UpdateEmployeeDto updateEmployeeDto) {
+        Employee employee = EmployeeDtoMapper.toEmployee(updateEmployeeDto);
 
         return new EmployeeCardDto(repository.save(employee));
     }

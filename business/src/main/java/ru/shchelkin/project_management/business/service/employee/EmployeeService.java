@@ -15,7 +15,7 @@ public interface EmployeeService {
 
     List<EmployeeCardDto> getAll(FilterEmployeeByTeamRoleDto filterDao);
 
-    EmployeeCardDto update(PutEmployeeDto employeeDto);
+    EmployeeCardDto update(UpdateEmployeeDto employeeDto);
 
     void delete(DeleteEmployeeDto deleteEmployeeDto);
 }

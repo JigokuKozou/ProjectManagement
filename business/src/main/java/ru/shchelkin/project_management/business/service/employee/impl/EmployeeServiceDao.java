@@ -63,7 +63,7 @@ public class EmployeeServiceDao implements EmployeeService {
     }
 
     @Override
-    public EmployeeCardDto update(PutEmployeeDto employeeDto) {
+    public EmployeeCardDto update(UpdateEmployeeDto employeeDto) {
         var employee = Employee.builder()
                 .id(employeeDto.getId())
                 .surname(employeeDto.getSurname())

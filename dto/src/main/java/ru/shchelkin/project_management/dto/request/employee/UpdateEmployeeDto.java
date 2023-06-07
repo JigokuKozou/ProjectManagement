@@ -8,7 +8,7 @@ import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 
 @Getter
 @Setter
-public class PutEmployeeDto extends CreateEmployeeDto {
+public class UpdateEmployeeDto extends CreateEmployeeDto {
     @NotNull(message = "Id should not be null")
     @Positive(message = "Id should be positive")
     private Long id;

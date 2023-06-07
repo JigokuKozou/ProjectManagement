@@ -6,38 +6,35 @@ import org.springframework.util.ObjectUtils;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 import ru.shchelkin.project_management.dto.request.employee.SearchEmployeeDto;
 import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
-import ru.shchelkin.project_management.model.Employee;
-import ru.shchelkin.project_management.model.Project;
-import ru.shchelkin.project_management.model.ProjectTeam;
-import ru.shchelkin.project_management.model.TeamMember;
+import ru.shchelkin.project_management.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public final class EmployeeSpecification {
     public static Specification<Employee> get(SearchEmployeeDto searchDto) {
         return (root, query, criteriaBuilder) -> {
-            final List<Predicate> searchPredicates = new ArrayList<>();
-            if (!ObjectUtils.isEmpty(searchDto.getSurname()))
-                searchPredicates.add(criteriaBuilder.like(root.get("surname"), '%' + searchDto.getSurname() + '%'));
+            final List<Predicate> searchPredicates = new ArrayList<>(6);
+            
+            addLikeCaseInsensitivePredicate(searchDto.getSurname(), Employee_.SURNAME,
+                    root, criteriaBuilder, searchPredicates);
 
-            if (!ObjectUtils.isEmpty(searchDto.getName()))
-                searchPredicates.add(criteriaBuilder.like(root.get("name"), '%' + searchDto.getName() + '%'));
+            addLikeCaseInsensitivePredicate(searchDto.getName(), Employee_.NAME,
+                    root, criteriaBuilder, searchPredicates);
 
-            if (!ObjectUtils.isEmpty(searchDto.getPatronymic()))
-                searchPredicates.add(criteriaBuilder.like(root.get("patronymic"), '%' + searchDto.getPatronymic() + '%'));
+            addLikeCaseInsensitivePredicate(searchDto.getPatronymic(), Employee_.PATRONYMIC,
+                    root, criteriaBuilder, searchPredicates);
 
-            if (!ObjectUtils.isEmpty(searchDto.getLogin()))
-                searchPredicates.add(criteriaBuilder.like(root.get("login"), '%' + searchDto.getLogin() + '%'));
+            addLikeCaseInsensitivePredicate(searchDto.getLogin(), Employee_.LOGIN,
+                    root, criteriaBuilder, searchPredicates);
 
-            if (!ObjectUtils.isEmpty(searchDto.getEmail()))
-                searchPredicates.add(criteriaBuilder.like(root.get("email"), '%' + searchDto.getEmail() + '%'));
+            addLikeCaseInsensitivePredicate(searchDto.getEmail(), Employee_.EMAIL,
+                    root, criteriaBuilder, searchPredicates);
 
-            if (!ObjectUtils.isEmpty(searchDto.getEmail()))
-                searchPredicates.add(criteriaBuilder.equal(root.get("status"), EmployeeStatus.ACTIVE.ordinal()));
-
-            if (searchPredicates.isEmpty())
-                query.where().getRestriction();
+            searchPredicates.add(
+                    criteriaBuilder.equal(root.get(Employee_.STATUS), EmployeeStatus.ACTIVE.ordinal())
+            );
 
             return query.where(criteriaBuilder.and(searchPredicates.toArray(new Predicate[0])))
                     .getRestriction();
@@ -52,15 +49,38 @@ public final class EmployeeSpecification {
             Join<TeamMember, ProjectTeam> projectTeamJoin = subRoot.join("team", JoinType.LEFT);
             Join<ProjectTeam, Project> projectJoin = projectTeamJoin.join("project", JoinType.LEFT);
 
-            subquery.select(subRoot.get("employee").get("id"));
-            subquery.where(
-                    criteriaBuilder.and(
-                            criteriaBuilder.like(projectJoin.get("codeName"), filterDao.getProjectCodeName()),
-                            criteriaBuilder.equal(subRoot.get("role"), filterDao.getTeamRole().ordinal())
-                    )
+            List<Predicate> predicates = new ArrayList<>(2);
+
+            if (!ObjectUtils.isEmpty(filterDao.getProjectCodeName()))
+                predicates.add(criteriaBuilder.equal(
+                        projectJoin.get(Project_.CODE_NAME), filterDao.getProjectCodeName()
+                ));
+
+            if (!Objects.isNull(filterDao.getTeamRole()))
+                predicates.add(criteriaBuilder.equal(
+                        subRoot.get(TeamMember_.ROLE), filterDao.getTeamRole().ordinal()
+                ));
+
+            predicates.add(
+                    criteriaBuilder.equal(root.get(Employee_.STATUS), EmployeeStatus.ACTIVE.ordinal())
             );
 
-            return root.get("id").in(subquery);
+            subquery.select(subRoot.get("employee").get(Employee_.ID));
+            subquery.where(
+                    criteriaBuilder.and(predicates.toArray(Predicate[]::new))
+            );
+
+            return root.get(Employee_.ID).in(subquery);
         });
+    }
+
+    private static void addLikeCaseInsensitivePredicate(String value, String fieldName,
+                                                        Path<?> root, CriteriaBuilder criteriaBuilder,
+                                                        List<Predicate> searchPredicates) {
+        if (!ObjectUtils.isEmpty(value)) {
+            searchPredicates.add(criteriaBuilder.like(
+                    criteriaBuilder.lower(root.get(fieldName)), '%' + value.toLowerCase() + '%'
+            ));
+        }
     }
 }
