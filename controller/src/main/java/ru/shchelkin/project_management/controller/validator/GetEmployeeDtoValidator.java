@@ -1,6 +1,7 @@
 package ru.shchelkin.project_management.controller.validator;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.shchelkin.project_management.dto.request.employee.GetEmployeeDto;
@@ -18,7 +19,7 @@ public class GetEmployeeDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         GetEmployeeDto employeeDto = (GetEmployeeDto) target;
 
-        if (Objects.isNull(employeeDto.getId()) && Objects.isNull(employeeDto.getLogin())) {
+        if (Objects.isNull(employeeDto.getId()) && ObjectUtils.isEmpty(employeeDto.getLogin())) {
             errors.rejectValue("id", "", "id and login should not be both null");
             errors.rejectValue("login", "", "id and login should not be both null");
         }
