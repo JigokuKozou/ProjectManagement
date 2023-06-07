@@ -1,16 +1,16 @@
 package ru.shchelkin.project_management.dto.request.employee;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class DeleteEmployeeDto {
-    @NotNull(message = "Id should not be null")
+public class GetEmployeeDto {
     @Positive(message = "Id should be positive")
     private Long id;
+
+    @Size(max = 20, message = "Login should not be more than 20 symbols")
+    private String login;
 }

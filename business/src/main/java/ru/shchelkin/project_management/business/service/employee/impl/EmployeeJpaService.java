@@ -1,11 +1,9 @@
 package ru.shchelkin.project_management.business.service.employee.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
 import ru.shchelkin.project_management.business.util.mapper.EmployeeDtoMapper;
-import ru.shchelkin.project_management.business.util.validator.EmployeeDtoValidator;
 import ru.shchelkin.project_management.dao.employee.EmployeeRepository;
 import ru.shchelkin.project_management.dao.employee.specification.EmployeeSpecification;
 import ru.shchelkin.project_management.dto.request.employee.*;
@@ -14,7 +12,9 @@ import ru.shchelkin.project_management.dto.response.employee.EmployeeCardDto;
 import ru.shchelkin.project_management.model.Employee;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class EmployeeJpaService implements EmployeeService {
@@ -27,20 +27,23 @@ public class EmployeeJpaService implements EmployeeService {
 
     @Override
     public EmployeeCardDto create(CreateEmployeeDto createEmployeeDto) {
-        Objects.requireNonNull(createEmployeeDto);
-        EmployeeDtoValidator.requireValid(createEmployeeDto);
-
         Employee employee = EmployeeDtoMapper.toEmployee(createEmployeeDto);
 
         return new EmployeeCardDto(repository.save(employee));
     }
 
     @Override
-    public List<EmployeeCardDto> getAll() {
-        return repository.findAll()
-                .stream()
-                .map(EmployeeCardDto::new)
-                .toList();
+    public EmployeeCardDto get(GetEmployeeDto employeeDto) {
+        Optional<Employee> employeeOptional = Optional.empty();
+
+        if (Objects.nonNull(employeeDto.getId()))
+            employeeOptional = repository.findById(employeeDto.getId());
+        else if (Objects.nonNull(employeeDto.getLogin()))
+            employeeOptional = repository.findByLogin(employeeDto.getLogin());
+
+        Employee employee = employeeOptional.orElseThrow(NoSuchElementException::new);
+
+        return new EmployeeCardDto(employee);
     }
 
     @Override
@@ -58,26 +61,14 @@ public class EmployeeJpaService implements EmployeeService {
     }
 
     @Override
-    public EmployeeCardDto getById(GetEmployeeByIdDto employeeByIdDto) {
-        Employee employee = repository.findById(employeeByIdDto.getId())
-                .orElseThrow(EntityNotFoundException::new);
-
-        return new EmployeeCardDto(employee);
-    }
-
-    @Override
-    public EmployeeCardDto update(UpdateEmployeeDto updateEmployeeDto) {
-        Objects.requireNonNull(updateEmployeeDto);
-        EmployeeDtoValidator.requireValid(updateEmployeeDto);
-
-        Employee employee = EmployeeDtoMapper.toEmployee(updateEmployeeDto);
+    public EmployeeCardDto update(PutEmployeeDto putEmployeeDto) {
+        Employee employee = EmployeeDtoMapper.toEmployee(putEmployeeDto);
 
         return new EmployeeCardDto(repository.save(employee));
     }
 
     @Override
     public void delete(DeleteEmployeeDto deleteEmployeeDto) {
-        Objects.requireNonNull(deleteEmployeeDto);
         repository.deleteById(deleteEmployeeDto.getId());
     }
 }

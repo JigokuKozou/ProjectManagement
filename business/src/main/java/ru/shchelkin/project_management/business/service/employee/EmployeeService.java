@@ -9,15 +9,13 @@ import java.util.List;
 public interface EmployeeService {
     EmployeeCardDto create(CreateEmployeeDto employeeDto);
 
-    List<EmployeeCardDto> getAll();
+    EmployeeCardDto get(GetEmployeeDto getEmployeeDto);
 
     List<EmployeeCardDto> getAll(SearchEmployeeDto searchEmployeeDto);
 
     List<EmployeeCardDto> getAll(FilterEmployeeByTeamRoleDto filterDao);
 
-    EmployeeCardDto getById(GetEmployeeByIdDto employeeByIdDto);
-
-    EmployeeCardDto update(UpdateEmployeeDto employeeDto);
+    EmployeeCardDto update(PutEmployeeDto employeeDto);
 
     void delete(DeleteEmployeeDto deleteEmployeeDto);
 }

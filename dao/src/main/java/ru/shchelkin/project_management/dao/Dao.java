@@ -10,6 +10,8 @@ public interface Dao<T> {
 
     Optional<T> getById(Long id);
 
+    Optional<T> getByLogin(String login);
+
     List<T> getAll();
 
     void deleteById(Long id);

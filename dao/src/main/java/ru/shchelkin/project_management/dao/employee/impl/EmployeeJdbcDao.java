@@ -104,6 +104,28 @@ public class EmployeeJdbcDao implements EmployeeDao {
     }
 
     @Override
+    public Optional<Employee> getByLogin(String login) {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT id, surname, name, patronymic, job_title, email, status, login, password " +
+                            "FROM " + TABLE_NAME +
+                            " WHERE login=?");
+
+            statement.setString(1, login);
+
+            ResultSet result = statement.executeQuery();
+            if (!result.next())
+                return Optional.empty();
+
+            Employee employee = getEmployeeFromResultSet(result);
+
+            return Optional.of(employee);
+        } catch (SQLException e) {
+            throw new RuntimeException("Getting error", e);
+        }
+    }
+
+    @Override
     public List<Employee> getAll() {
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(

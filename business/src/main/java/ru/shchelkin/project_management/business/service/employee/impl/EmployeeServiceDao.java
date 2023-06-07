@@ -10,6 +10,8 @@ import ru.shchelkin.project_management.model.Employee;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 
 public class EmployeeServiceDao implements EmployeeService {
     private final EmployeeDao dao;
@@ -37,8 +39,17 @@ public class EmployeeServiceDao implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeCardDto> getAll() {
-        return dao.getAll().stream().map(EmployeeCardDto::new).toList();
+    public EmployeeCardDto get(GetEmployeeDto employeeDto) {
+        Optional<Employee> employeeOptional = Optional.empty();
+
+        if (Objects.nonNull(employeeDto.getId()))
+            employeeOptional = dao.getById(employeeDto.getId());
+        else if (Objects.nonNull(employeeDto.getLogin()))
+            employeeOptional = dao.getByLogin(employeeDto.getLogin());
+
+        Employee employee = employeeOptional.orElseThrow(NoSuchElementException::new);
+
+        return new EmployeeCardDto(employee);
     }
 
     @Override
@@ -52,14 +63,7 @@ public class EmployeeServiceDao implements EmployeeService {
     }
 
     @Override
-    public EmployeeCardDto getById(GetEmployeeByIdDto employeeByIdDto) {
-        Employee employee = dao.getById(employeeByIdDto.getId()).orElseThrow(NoSuchElementException::new);
-
-        return new EmployeeCardDto(employee);
-    }
-
-    @Override
-    public EmployeeCardDto update(UpdateEmployeeDto employeeDto) {
+    public EmployeeCardDto update(PutEmployeeDto employeeDto) {
         var employee = Employee.builder()
                 .id(employeeDto.getId())
                 .surname(employeeDto.getSurname())
