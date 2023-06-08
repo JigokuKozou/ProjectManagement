@@ -56,7 +56,7 @@ public class Employee {
 
     public void setSurname(String surname) {
         this.surname = surname.trim();
-    }
+    } // TODO Add to setters null check
 
     public void setName(String name) {
         this.name = name.trim();
