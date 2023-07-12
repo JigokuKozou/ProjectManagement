@@ -43,11 +43,11 @@ public final class EmployeeSpecification {
 
     public static Specification<Employee> get(FilterEmployeeByTeamRoleDto filterDao) {
         return ((root, query, criteriaBuilder) -> {
-            Subquery<Long> subquery = query.subquery(Long.class);
-            Root<TeamMember> subRoot = subquery.from(TeamMember.class);
+            Subquery<Long> employeeIdQuery = query.subquery(Long.class);
+            Root<TeamMember> teamMemberRoot = employeeIdQuery.from(TeamMember.class);
 
-            Join<TeamMember, ProjectTeam> projectTeamJoin = subRoot.join("team", JoinType.LEFT);
-            Join<ProjectTeam, Project> projectJoin = projectTeamJoin.join("project", JoinType.LEFT);
+            Join<TeamMember, ProjectTeam> projectTeamJoin = teamMemberRoot.join(TeamMember_.TEAM, JoinType.LEFT);
+            Join<ProjectTeam, Project> projectJoin = projectTeamJoin.join(ProjectTeam_.PROJECT, JoinType.LEFT);
 
             List<Predicate> predicates = new ArrayList<>(2);
 
@@ -56,21 +56,19 @@ public final class EmployeeSpecification {
                         projectJoin.get(Project_.CODE_NAME), filterDao.getProjectCodeName()
                 ));
 
-            if (!Objects.isNull(filterDao.getTeamRole()))
+            if (Objects.nonNull(filterDao.getTeamRole()))
                 predicates.add(criteriaBuilder.equal(
-                        subRoot.get(TeamMember_.ROLE), filterDao.getTeamRole().ordinal()
+                        teamMemberRoot.get(TeamMember_.ROLE), filterDao.getTeamRole().ordinal()
                 ));
 
             predicates.add(
                     criteriaBuilder.equal(root.get(Employee_.STATUS), EmployeeStatus.ACTIVE.ordinal())
             );
 
-            subquery.select(subRoot.get("employee").get(Employee_.ID));
-            subquery.where(
-                    criteriaBuilder.and(predicates.toArray(Predicate[]::new))
-            );
+            employeeIdQuery.select(teamMemberRoot.get(TeamMember_.EMPLOYEE).get(Employee_.ID))
+                    .where(criteriaBuilder.and(predicates.toArray(Predicate[]::new)));
 
-            return root.get(Employee_.ID).in(subquery);
+            return root.get(Employee_.ID).in(employeeIdQuery);
         });
     }
 

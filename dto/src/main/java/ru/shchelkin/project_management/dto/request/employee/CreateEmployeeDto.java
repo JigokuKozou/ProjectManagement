@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import ru.shchelkin.project_management.model.Employee;
 
 @Getter
 @Setter
@@ -33,16 +32,4 @@ public class CreateEmployeeDto {
 
     @Size(max = 128, message = "Password should not be more than 128 symbols")
     private String password;
-
-    public Employee toEmployee() {
-        return Employee.builder()
-                .surname(surname)
-                .name(name)
-                .patronymic(patronymic)
-                .jobTitle(jobTitle)
-                .email(email)
-                .login(login)
-                .password(password)
-                .build();
-    }
 }

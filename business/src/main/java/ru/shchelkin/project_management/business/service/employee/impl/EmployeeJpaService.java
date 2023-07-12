@@ -1,18 +1,24 @@
 package ru.shchelkin.project_management.business.service.employee.impl;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.shchelkin.project_management.business.mapper.EmployeeMapper;
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
+import ru.shchelkin.project_management.commons.exceptions.employee.EmployeeNotFoundException;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 import ru.shchelkin.project_management.dao.employee.EmployeeRepository;
 import ru.shchelkin.project_management.dao.employee.specification.EmployeeSpecification;
-import ru.shchelkin.project_management.dto.request.employee.*;
+import ru.shchelkin.project_management.dto.request.employee.CreateEmployeeDto;
+import ru.shchelkin.project_management.dto.request.employee.GetEmployeeDto;
+import ru.shchelkin.project_management.dto.request.employee.SearchEmployeeDto;
+import ru.shchelkin.project_management.dto.request.employee.UpdateEmployeeDto;
 import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
 import ru.shchelkin.project_management.dto.response.employee.EmployeeCardDto;
 import ru.shchelkin.project_management.model.Employee;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -26,15 +32,19 @@ public class EmployeeJpaService implements EmployeeService {
     }
 
     @Override
-    public EmployeeCardDto create(CreateEmployeeDto createEmployeeDto) {
-        Employee employee = createEmployeeDto.toEmployee();
+    @Transactional
+    public EmployeeCardDto create(@NonNull CreateEmployeeDto createEmployeeDto) {
+        Employee employee = new Employee();
+        EmployeeMapper.map(createEmployeeDto, employee);
+
         employee.setStatus(EmployeeStatus.ACTIVE);
 
-        return new EmployeeCardDto(repository.save(employee));
+        return EmployeeMapper.getEmployeeCardDto(repository.save(employee));
     }
 
     @Override
-    public EmployeeCardDto get(GetEmployeeDto employeeDto) {
+    @Transactional(readOnly = true)
+    public EmployeeCardDto get(@NonNull GetEmployeeDto employeeDto) {
         Optional<Employee> employeeOptional = Optional.empty();
 
         if (Objects.nonNull(employeeDto.getId()))
@@ -42,34 +52,44 @@ public class EmployeeJpaService implements EmployeeService {
         else if (Objects.nonNull(employeeDto.getLogin()))
             employeeOptional = repository.findByLogin(employeeDto.getLogin());
 
-        Employee employee = employeeOptional.orElseThrow(NoSuchElementException::new);
+        Employee employee = employeeOptional.orElseThrow(EmployeeNotFoundException::new);
 
-        return new EmployeeCardDto(employee);
+        return EmployeeMapper.getEmployeeCardDto(employee);
     }
 
     @Override
-    public List<EmployeeCardDto> getAll(SearchEmployeeDto searchEmployeeDto) {
+    @Transactional(readOnly = true)
+    public List<EmployeeCardDto> getAll(@NonNull SearchEmployeeDto searchEmployeeDto) {
         return repository.findAll(EmployeeSpecification.get(searchEmployeeDto)).stream()
-                .map(EmployeeCardDto::new)
+                .map(EmployeeMapper::getEmployeeCardDto)
                 .toList();
     }
 
     @Override
-    public List<EmployeeCardDto> getAll(FilterEmployeeByTeamRoleDto filterDao) {
+    @Transactional(readOnly = true)
+    public List<EmployeeCardDto> getAll(@NonNull FilterEmployeeByTeamRoleDto filterDao) {
         return repository.findAll(EmployeeSpecification.get(filterDao)).stream()
-                .map(EmployeeCardDto::new)
+                .map(EmployeeMapper::getEmployeeCardDto)
                 .toList();
     }
 
     @Override
-    public EmployeeCardDto update(UpdateEmployeeDto updateEmployeeDto) {
-        Employee employee = updateEmployeeDto.toEmployee();
+    @Transactional
+    public EmployeeCardDto update(@NonNull UpdateEmployeeDto updateEmployeeDto) {
+        Employee employee = repository.findById(updateEmployeeDto.getId())
+                        .orElseThrow(EmployeeNotFoundException::new);
 
-        return new EmployeeCardDto(repository.save(employee));
+        EmployeeMapper.map(updateEmployeeDto, employee);
+
+        return EmployeeMapper.getEmployeeCardDto(employee);
     }
 
     @Override
-    public void delete(DeleteEmployeeDto deleteEmployeeDto) {
-        repository.deleteById(deleteEmployeeDto.getId());
+    @Transactional
+    public void delete(@NonNull Long id) {
+        Employee employee = repository.findById(id)
+                .orElseThrow(EmployeeNotFoundException::new);
+
+        employee.setStatus(EmployeeStatus.DELETED);
     }
 }
