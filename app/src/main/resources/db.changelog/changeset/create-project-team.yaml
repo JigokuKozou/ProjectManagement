@@ -4,18 +4,20 @@ databaseChangeLog:
       author: IlyaShchelkin
       changes:
         - createTable:
-            tableName: employee
+            tableName: project_team
             columns:
               - column:
-                name: id
-                type: BIGINT
-                constraints:
-                  primaryKey: true
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
               - column:
-                name: project_id
-                type: BIGINT
-                constraints:
-                  nullable: false
+                  name: project_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
             foreignKeys:
               - foreignKey:
                   name: project_team_project_fk

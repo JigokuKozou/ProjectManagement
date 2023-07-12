@@ -4,28 +4,30 @@ databaseChangeLog:
       author: IlyaShchelkin
       changes:
         - createTable:
-            tableName: employee
+            tableName: team_member
             columns:
               - column:
-                name: id
-                type: BIGINT
-                constraints:
-                  primaryKey: true
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
               - column:
-                name: employee_id
-                type: BIGINT
-                constraints:
-                  nullable: false
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
               - column:
-                name: team_id
-                type: BIGINT
-                constraints:
-                  nullable: false
+                  name: team_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
               - column:
-                name: role
-                type: SMALLINT
-                constraints:
-                  nullable: false
+                  name: role
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
             foreignKeys:
               - foreignKey:
                   name: team_member_employee_fk
