@@ -40,6 +40,7 @@ public class Task {
     @JoinColumn(name = "executor_id", referencedColumnName = "id")
     private TeamMember executor;
 
+    @NotNull(message = "Estimate hours should not be null")
     @Positive(message = "Estimate hours should be positive")
     @Column(name = "estimate_hours")
     private Integer estimateHours;
