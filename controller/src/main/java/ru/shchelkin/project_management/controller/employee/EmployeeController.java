@@ -34,7 +34,7 @@ public class EmployeeController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public EmployeeCardDto create(@RequestBody CreateEmployeeDto employeeDto) {
+    public EmployeeCardDto create(@RequestBody @Valid CreateEmployeeDto employeeDto) {
         return employeeService.create(employeeDto);
     }
 
@@ -62,7 +62,8 @@ public class EmployeeController {
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeCardDto update(@RequestBody @Valid UpdateEmployeeDto employeeDto) {
+    public EmployeeCardDto update(@RequestBody @Valid UpdateEmployeeDto employeeDto, @PathVariable Long id) {
+        employeeDto.setId(id);
         return employeeService.update(employeeDto);
     }
 
