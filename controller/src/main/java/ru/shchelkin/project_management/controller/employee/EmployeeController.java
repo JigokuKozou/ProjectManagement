@@ -33,6 +33,7 @@ public class EmployeeController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
     public EmployeeCardDto create(@RequestBody CreateEmployeeDto employeeDto) {
         return employeeService.create(employeeDto);
     }
