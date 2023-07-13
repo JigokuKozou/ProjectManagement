@@ -16,7 +16,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import ru.shchelkin.project_management.commons.exceptions.IllegalStatusException;
 import ru.shchelkin.project_management.commons.exceptions.NotFoundException;
 import ru.shchelkin.project_management.commons.exceptions.NotValidException;
-import ru.shchelkin.project_management.commons.exceptions.WasNotRemovedException;
 import ru.shchelkin.project_management.dto.response.error.ErrorDto;
 import ru.shchelkin.project_management.dto.response.error.FieldErrorDto;
 
@@ -66,11 +65,6 @@ public class ExceptionApiHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalStatusException.class)
     public ResponseEntity<ErrorDto> handleException(IllegalStatusException exception) {
-        return new ResponseEntity<>(new ErrorDto(exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(WasNotRemovedException.class)
-    public ResponseEntity<ErrorDto> handleException(WasNotRemovedException exception) {
         return new ResponseEntity<>(new ErrorDto(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 

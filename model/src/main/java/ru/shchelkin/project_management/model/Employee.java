@@ -1,10 +1,7 @@
 package ru.shchelkin.project_management.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 
@@ -18,6 +15,7 @@ import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Positive(message = "Id should be positive")
     @Column(name = "id")
     private Long id;
 
@@ -45,6 +43,7 @@ public class Employee {
     private String email;
 
     @NotNull(message = "Status should not be null")
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "status")
     private EmployeeStatus status;
 
