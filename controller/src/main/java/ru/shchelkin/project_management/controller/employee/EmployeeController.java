@@ -62,7 +62,7 @@ public class EmployeeController {
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeCardDto update(@RequestBody @Valid UpdateEmployeeDto employeeDto, @PathVariable Long id) {
+    public EmployeeCardDto update(@RequestBody @Valid UpdateEmployeeDto employeeDto, Long id) {
         employeeDto.setId(id);
         return employeeService.update(employeeDto);
     }
