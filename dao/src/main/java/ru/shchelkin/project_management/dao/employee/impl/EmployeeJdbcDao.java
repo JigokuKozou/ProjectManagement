@@ -2,6 +2,7 @@ package ru.shchelkin.project_management.dao.employee.impl;
 
 import lombok.NonNull;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
+import ru.shchelkin.project_management.dao.employee.EmployeeDao;
 import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
 import ru.shchelkin.project_management.model.Employee;
 
@@ -89,6 +90,28 @@ public class EmployeeJdbcDao implements EmployeeDao {
                             " WHERE id=?");
 
             statement.setLong(1, id);
+
+            ResultSet result = statement.executeQuery();
+            if (!result.next())
+                return Optional.empty();
+
+            Employee employee = getEmployeeFromResultSet(result);
+
+            return Optional.of(employee);
+        } catch (SQLException e) {
+            throw new RuntimeException("Getting error", e);
+        }
+    }
+
+    @Override
+    public Optional<Employee> getByLogin(String login) {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT id, surname, name, patronymic, job_title, email, status, login, password " +
+                            "FROM " + TABLE_NAME +
+                            " WHERE login=?");
+
+            statement.setString(1, login);
 
             ResultSet result = statement.executeQuery();
             if (!result.next())

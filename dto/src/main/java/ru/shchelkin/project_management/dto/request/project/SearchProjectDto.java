@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class SearchProjectDto {
-    private String query;
+    private String filter;
 
     private List<ProjectStatus> statuses;
 }

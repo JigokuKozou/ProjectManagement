@@ -7,48 +7,50 @@ databaseChangeLog:
             tableName: employee
             columns:
               - column:
-                name: id
-                type: BIGSERIAL
-                constraints:
-                      primaryKey: true
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
               - column:
-                name: surname
-                type: VARCHAR(30)
-                constraints:
-                      nullable: false
+                  name: surname
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
               - column:
-                name: name
-                type: VARCHAR(20)
-                constraints:
-                      nullable: false
+                  name: name
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
               - column:
-                name: patronymic
-                type: VARCHAR(30)
-                constraints:
-                      nullable: true
+                  name: patronymic
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: true
               - column:
-                name: job_title
-                type: VARCHAR(100)
-                constraints:
-                      nullable: true
+                  name: job_title
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
               - column:
-                name: email
-                type: VARCHAR(256)
-                constraints:
-                      nullable: true
+                  name: email
+                  type: VARCHAR(256)
+                  constraints:
+                    nullable: true
               - column:
-                name: status
-                type: SMALLINT
-                constraints:
-                      nullable: false
+                  name: status
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
               - column:
-                name: login
-                type: VARCHAR(20)
-                constraints:
-                      unique: true
-                      nullable: true
+                  name: login
+                  type: VARCHAR(20)
+                  constraints:
+                    unique: true
+                    nullable: true
               - column:
-                name: password
-                type: VARCHAR(128)
-                constraints:
-                      nullable: true
+                  name: password
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: true

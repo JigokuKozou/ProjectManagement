@@ -113,6 +113,16 @@ public class EmployeeDataStorage implements Dao<Employee> {
     }
 
     @Override
+    public Optional<Employee> getByLogin(String login) {
+        for (var employee : employees) {
+            if (Objects.equals(employee.getLogin(), login))
+                return Optional.of(employee);
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
     public List<Employee> getAll() {
         return List.copyOf(employees);
     }

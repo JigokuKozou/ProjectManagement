@@ -10,13 +10,13 @@ import java.util.List;
 @Getter
 @Setter
 public class SearchTaskDto {
-    private String textFilter;
+    private String name;
 
     private List<TaskStatus> statuses;
 
-    private String executorId;
+    private Long executorId;
 
-    private String authorId;
+    private Long authorId;
 
     private LocalDateTime deadLineTimeStart;
 

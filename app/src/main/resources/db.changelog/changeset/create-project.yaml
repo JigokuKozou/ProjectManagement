@@ -4,31 +4,33 @@ databaseChangeLog:
       author: IlyaShchelkin
       changes:
         - createTable:
-            tableName: employee
+            tableName: project
             columns:
               - column:
-                name: id
-                type: BIGSERIAL
-                constraints:
-                  primaryKey: true
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
               - column:
-                name: code_name
-                type: VARCHAR(100)
-                constraints:
-                  nullable: false
-                  unique: true
+                  name: code_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
               - column:
-                name: name
-                type: VARCHAR(100)
-                constraints:
-                  nullable: false
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
               - column:
-                name: description
-                type: TEXT
-                constraints:
-                  nullable: true
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: true
               - column:
-                name: status
-                type: SMALLINT
-                constraints:
-                  nullable: false
+                  name: status
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
