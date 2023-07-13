@@ -1,9 +1,7 @@
 package ru.shchelkin.project_management.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import ru.shchelkin.project_management.commons.status.TaskStatus;
 
@@ -32,6 +30,8 @@ public class Task {
     @Column(name = "description")
     private String description;
 
+
+    @NotNull(message = "Project should not be null")
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private Project project;
@@ -40,23 +40,29 @@ public class Task {
     @JoinColumn(name = "executor_id", referencedColumnName = "id")
     private TeamMember executor;
 
+    @Positive(message = "Estimate hours should be positive")
     @Column(name = "estimate_hours")
     private Integer estimateHours;
 
+    @Future(message = "Deadline should not be in past or now")
     @Column(name = "deadline")
     private LocalDateTime deadline;
 
+    @NotNull(message = "Status should not be null")
     @Column(name = "status")
     @Enumerated(EnumType.ORDINAL)
     private TaskStatus status;
 
+    @NotNull(message = "Author should not be null")
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private TeamMember author;
 
+    @PastOrPresent
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @PastOrPresent
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }
