@@ -34,7 +34,7 @@ public class TeamMember {
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private ProjectTeam team;
 
-    @NotNull(message = "Team role should not be null")
+    @NotNull(message = "Role should not be null")
     @Column(name = "role")
     @Enumerated(EnumType.ORDINAL)
     private TeamRole role;
