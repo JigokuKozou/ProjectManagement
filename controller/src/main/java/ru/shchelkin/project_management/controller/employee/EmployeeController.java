@@ -61,7 +61,8 @@ public class EmployeeController {
         return employeeService.getAll(filterDao);
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public EmployeeCardDto update(@RequestBody @Valid UpdateEmployeeDto employeeDto, Long id) {
         employeeDto.setId(id);
         return employeeService.update(employeeDto);
