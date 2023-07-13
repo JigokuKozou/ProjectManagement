@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.shchelkin.project_management.business.mapper.TaskMapper;
+import ru.shchelkin.project_management.commons.exceptions.employee.EmployeeNotFoundException;
+import ru.shchelkin.project_management.commons.exceptions.project.ProjectNotFoundException;
 import ru.shchelkin.project_management.commons.exceptions.task.TaskIllegalStatusException;
 import ru.shchelkin.project_management.commons.exceptions.task.TaskNotFoundException;
 import ru.shchelkin.project_management.commons.exceptions.team_member.TeamMemberNotFoundException;
 import ru.shchelkin.project_management.commons.status.TaskStatus;
+import ru.shchelkin.project_management.dao.employee.EmployeeRepository;
+import ru.shchelkin.project_management.dao.project.ProjectRepository;
 import ru.shchelkin.project_management.dao.task.TaskRepository;
 import ru.shchelkin.project_management.dao.task.specification.TaskSpecification;
 import ru.shchelkin.project_management.dao.team_member.TeamMemberRepository;
@@ -16,8 +20,7 @@ import ru.shchelkin.project_management.dto.request.task.CreateTaskDto;
 import ru.shchelkin.project_management.dto.request.task.SearchTaskDto;
 import ru.shchelkin.project_management.dto.request.task.UpdateTaskDto;
 import ru.shchelkin.project_management.dto.response.task.TaskCardDto;
-import ru.shchelkin.project_management.model.Task;
-import ru.shchelkin.project_management.model.TeamMember;
+import ru.shchelkin.project_management.model.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,12 +31,18 @@ public class TaskJpaService implements TaskService {
 
     private final TaskRepository taskRepository;
 
+    private final ProjectRepository projectRepository;
+
     private final TeamMemberRepository teamMemberRepository;
 
+    private final EmployeeRepository employeeRepository;
+
     @Autowired
-    public TaskJpaService(TaskRepository taskRepository, TeamMemberRepository teamMemberRepository) {
+    public TaskJpaService(TaskRepository taskRepository, ProjectRepository projectRepository, TeamMemberRepository teamMemberRepository, EmployeeRepository employeeRepository) {
         this.taskRepository = taskRepository;
+        this.projectRepository = projectRepository;
         this.teamMemberRepository = teamMemberRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
@@ -44,9 +53,17 @@ public class TaskJpaService implements TaskService {
 
         task.setStatus(TaskStatus.NEW);
 
-        final TeamMember executor = getTeamMember(createTaskDto.getExecutorId());
-        final TeamMember author = getTeamMember(createTaskDto.getAuthorId());
+        final Project project = getProject(createTaskDto.getProjectCodeName());
+        task.setProject(project);
+
+        final TeamMember executor = getTeamMember(task.getProject().getTeam(),
+                createTaskDto.getExecutorId());
+
         task.setExecutor(executor);
+
+        final TeamMember author = getTeamMember(task.getProject().getTeam(),
+                createTaskDto.getAuthorId());
+
         task.setAuthor(author);
 
         final LocalDateTime now = LocalDateTime.now();
@@ -64,8 +81,11 @@ public class TaskJpaService implements TaskService {
         task.setName(updateTaskDto.getName());
         task.setDescription(updateTaskDto.getDescription());
 
-        if (!Objects.equals(task.getExecutor().getId(), updateTaskDto.getId()))
-            task.setExecutor(getTeamMember(updateTaskDto.getExecutorId()));
+        if (!Objects.equals(task.getExecutor().getId(), updateTaskDto.getExecutorId())) {
+            final TeamMember executor = getTeamMember(task.getProject().getTeam(),
+                    updateTaskDto.getExecutorId());
+            task.setExecutor(executor);
+        }
 
         task.setEstimateHours(updateTaskDto.getEstimateHours());
         task.setDeadline(updateTaskDto.getDeadLineDate());
@@ -92,14 +112,26 @@ public class TaskJpaService implements TaskService {
             throw new TaskIllegalStatusException(task.getStatus(), changeTaskStatusDto.getStatus());
     }
 
+    private Project getProject(String projectCodeName) {
+        return projectRepository.findByCodeName(projectCodeName)
+                .orElseThrow(ProjectNotFoundException::new);
+    }
+
     private Task getTask(Long id) {
         return taskRepository.findById(id)
                 .orElseThrow(TaskNotFoundException::new);
     }
 
-    private TeamMember getTeamMember(Long employeeId) {
-        return teamMemberRepository.findByEmployeeId(employeeId)
+    private TeamMember getTeamMember(ProjectTeam project, Long employeeId) {
+        final Employee employee = getEmployee(employeeId);
+
+        return teamMemberRepository.findByTeamAndEmployee(project, employee)
                 .orElseThrow(TeamMemberNotFoundException::new);
+    }
+
+    private Employee getEmployee(Long id) {
+        return employeeRepository.findById(id)
+                .orElseThrow(EmployeeNotFoundException::new);
     }
 
     private static boolean isAvailableChangeStatus(TaskStatus current, TaskStatus value) {

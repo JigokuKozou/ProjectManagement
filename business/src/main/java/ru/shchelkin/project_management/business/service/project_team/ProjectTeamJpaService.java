@@ -8,7 +8,6 @@ import ru.shchelkin.project_management.commons.exceptions.employee.EmployeeNotFo
 import ru.shchelkin.project_management.commons.exceptions.project.ProjectNotFoundException;
 import ru.shchelkin.project_management.commons.exceptions.project_team.ProjectTeamNotFoundException;
 import ru.shchelkin.project_management.commons.exceptions.team_member.TeamMemberNotFoundException;
-import ru.shchelkin.project_management.commons.exceptions.team_member.TeamMemberWasNotRemovedException;
 import ru.shchelkin.project_management.dao.employee.EmployeeRepository;
 import ru.shchelkin.project_management.dao.project.ProjectRepository;
 import ru.shchelkin.project_management.dao.project_team.ProjectTeamRepository;
@@ -30,15 +29,15 @@ public class ProjectTeamJpaService implements ProjectTeamService{
 
     private final ProjectRepository projectRepository;
 
-    private final TeamMemberRepository memberRepository;
+    private final TeamMemberRepository teamMemberRepository;
 
     private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public ProjectTeamJpaService(ProjectTeamRepository teamRepository, ProjectRepository projectRepository, TeamMemberRepository memberRepository, EmployeeRepository employeeRepository) {
+    public ProjectTeamJpaService(ProjectTeamRepository teamRepository, ProjectRepository projectRepository, TeamMemberRepository teamMemberRepository, EmployeeRepository employeeRepository) {
         this.teamRepository = teamRepository;
         this.projectRepository = projectRepository;
-        this.memberRepository = memberRepository;
+        this.teamMemberRepository = teamMemberRepository;
         this.employeeRepository = employeeRepository;
     }
 
@@ -57,21 +56,26 @@ public class ProjectTeamJpaService implements ProjectTeamService{
         member.setEmployee(employee);
         member.setRole(addTeamMemberDto.getRole());
 
-        memberRepository.save(member);
+        teamMemberRepository.save(member);
     }
 
     @Override
     @Transactional
     public void removeTeamMember(RemoveTeamMemberDto removeTeamMemberDto) {
 
-        final TeamMember member = getTeamMember(removeTeamMemberDto.getEmployeeId());
+        final Employee employee = getEmployee(removeTeamMemberDto.getEmployeeId());
 
         final ProjectTeam team = getProjectTeam(removeTeamMemberDto.getProjectCodeName());
 
-        if (!team.remove(member))
-            throw new TeamMemberWasNotRemovedException();
+        for (var member : team.getMembers()) {
+            if (member.getEmployee() == employee) {
+                team.remove(member);
 
-        memberRepository.delete(member);
+                teamMemberRepository.delete(member);
+            }
+        }
+
+        throw new TeamMemberNotFoundException();
     }
 
     @Override
@@ -110,10 +114,5 @@ public class ProjectTeamJpaService implements ProjectTeamService{
     private ProjectTeam getProjectTeam(Project project) {
         return teamRepository.findByProject(project)
                 .orElseThrow(ProjectTeamNotFoundException::new);
-    }
-
-    private TeamMember getTeamMember(Long employeeId) {
-        return memberRepository.findByEmployeeId(employeeId)
-                .orElseThrow(TeamMemberNotFoundException::new);
     }
 }

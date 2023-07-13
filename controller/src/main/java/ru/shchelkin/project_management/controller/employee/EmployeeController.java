@@ -33,7 +33,8 @@ public class EmployeeController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeCardDto create(@RequestBody CreateEmployeeDto employeeDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public EmployeeCardDto create(@RequestBody @Valid CreateEmployeeDto employeeDto) {
         return employeeService.create(employeeDto);
     }
 
@@ -60,12 +61,14 @@ public class EmployeeController {
         return employeeService.getAll(filterDao);
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeCardDto update(@RequestBody @Valid UpdateEmployeeDto employeeDto) {
+    @PutMapping(value = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public EmployeeCardDto update(@RequestBody @Valid UpdateEmployeeDto employeeDto, Long id) {
+        employeeDto.setId(id);
         return employeeService.update(employeeDto);
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {
         employeeService.delete(id);
