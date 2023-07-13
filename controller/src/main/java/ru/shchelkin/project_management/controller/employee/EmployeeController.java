@@ -68,7 +68,7 @@ public class EmployeeController {
         return employeeService.update(employeeDto);
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {
         employeeService.delete(id);
