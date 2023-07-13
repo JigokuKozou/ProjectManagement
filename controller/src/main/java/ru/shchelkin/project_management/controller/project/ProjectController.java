@@ -1,6 +1,7 @@
 package ru.shchelkin.project_management.controller.project;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
+    @Autowired
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
     }
