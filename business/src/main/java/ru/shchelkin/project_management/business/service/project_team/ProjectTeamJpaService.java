@@ -1,9 +1,13 @@
 package ru.shchelkin.project_management.business.service.project_team;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import ru.shchelkin.project_management.business.mapper.TeamMemberMapper;
+import ru.shchelkin.project_management.commons.exceptions.BlankException;
+import ru.shchelkin.project_management.commons.exceptions.NullException;
 import ru.shchelkin.project_management.commons.exceptions.employee.EmployeeNotFoundException;
 import ru.shchelkin.project_management.commons.exceptions.project.ProjectNotFoundException;
 import ru.shchelkin.project_management.commons.exceptions.project_team.ProjectTeamNotFoundException;
@@ -15,13 +19,14 @@ import ru.shchelkin.project_management.dao.team_member.TeamMemberRepository;
 import ru.shchelkin.project_management.dto.request.project_team.AddTeamMemberDto;
 import ru.shchelkin.project_management.dto.request.project_team.GetAllTeamMemberDto;
 import ru.shchelkin.project_management.dto.request.project_team.RemoveTeamMemberDto;
-import ru.shchelkin.project_management.dto.response.team_member.TeamMemberCardDto;
+import ru.shchelkin.project_management.dto.response.team_member.TeamMemberDto;
 import ru.shchelkin.project_management.model.Employee;
 import ru.shchelkin.project_management.model.Project;
 import ru.shchelkin.project_management.model.ProjectTeam;
 import ru.shchelkin.project_management.model.TeamMember;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProjectTeamJpaService implements ProjectTeamService{
@@ -43,25 +48,33 @@ public class ProjectTeamJpaService implements ProjectTeamService{
 
     @Override
     @Transactional
-    public void addTeamMember(AddTeamMemberDto addTeamMemberDto) {
+    public void addTeamMember(@NonNull AddTeamMemberDto addTeamMemberDto) {
+        validateProjectCodeName(addTeamMemberDto.getProjectCodeName());
+        validateEmployeeId(addTeamMemberDto.getEmployeeId());
+
+        if (Objects.isNull(addTeamMemberDto.getRole()))
+            throw new NullException("role");
+
         final Project project = getProject(addTeamMemberDto.getProjectCodeName());
 
         final Employee employee = getEmployee(addTeamMemberDto.getEmployeeId());
 
         final ProjectTeam team = teamRepository.findByProject(project)
-                .orElse(createProjectTeam(project));
+                .orElseGet(() -> createProjectTeam(project));
 
         final TeamMember member = new TeamMember();
         member.setTeam(team);
         member.setEmployee(employee);
         member.setRole(addTeamMemberDto.getRole());
 
-        teamMemberRepository.save(member);
+        teamMemberRepository.saveAndFlush(member);
     }
 
     @Override
     @Transactional
-    public void removeTeamMember(RemoveTeamMemberDto removeTeamMemberDto) {
+    public void removeTeamMember(@NonNull RemoveTeamMemberDto removeTeamMemberDto) {
+        validateProjectCodeName(removeTeamMemberDto.getProjectCodeName());
+        validateEmployeeId(removeTeamMemberDto.getEmployeeId());
 
         final Employee employee = getEmployee(removeTeamMemberDto.getEmployeeId());
 
@@ -80,12 +93,22 @@ public class ProjectTeamJpaService implements ProjectTeamService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<TeamMemberCardDto> getAll(GetAllTeamMemberDto getAllTeamMemberDto) {
+    public List<TeamMemberDto> getAll(GetAllTeamMemberDto getAllTeamMemberDto) {
         final ProjectTeam team = getProjectTeam(getAllTeamMemberDto.getProjectCodeName());
 
         return team.getMembers().stream()
-                .map(TeamMemberMapper::getTeamMemberCardDto)
+                .map(TeamMemberMapper::getTeamMemberDto)
                 .toList();
+    }
+
+    private void validateProjectCodeName(String projectCodeName) {
+        if (!StringUtils.hasText(projectCodeName))
+            throw new BlankException("projectCodeName", "Project code name");
+    }
+
+    private void validateEmployeeId(Long id) {
+        if (Objects.isNull(id))
+            throw new NullException("employeeId", "Employee id");
     }
 
     private ProjectTeam createProjectTeam(Project project) {

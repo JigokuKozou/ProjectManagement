@@ -3,11 +3,15 @@ package ru.shchelkin.project_management.dto.request.employee;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateEmployeeDto {
     @NotBlank(message = "Surname should not be blank")
     @Size(max = 30, message = "Surname should not be more than 30 symbols")

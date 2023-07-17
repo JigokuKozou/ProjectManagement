@@ -1,14 +1,15 @@
 package ru.shchelkin.project_management.dto.response.employee;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
-public class EmployeeCardDto {
+public class EmployeeDto {
     private Long id;
 
     private String surname;

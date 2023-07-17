@@ -4,16 +4,16 @@ import ru.shchelkin.project_management.dto.request.project.ChangeProjectStatusDt
 import ru.shchelkin.project_management.dto.request.project.CreateProjectDto;
 import ru.shchelkin.project_management.dto.request.project.SearchProjectDto;
 import ru.shchelkin.project_management.dto.request.project.UpdateProjectDto;
-import ru.shchelkin.project_management.dto.response.project.ProjectCardDto;
+import ru.shchelkin.project_management.dto.response.project.ProjectDto;
 
 import java.util.List;
 
 public interface ProjectService {
-    ProjectCardDto create(CreateProjectDto createProjectDto);
+    ProjectDto create(CreateProjectDto createProjectDto);
 
-    ProjectCardDto update(UpdateProjectDto updateProjectDto);
+    ProjectDto update(UpdateProjectDto updateProjectDto);
 
-    List<ProjectCardDto> getAll(SearchProjectDto searchProjectDto);
+    List<ProjectDto> getAll(SearchProjectDto searchProjectDto);
 
     void changeStatus(ChangeProjectStatusDto changeProjectStatusDto);
 }

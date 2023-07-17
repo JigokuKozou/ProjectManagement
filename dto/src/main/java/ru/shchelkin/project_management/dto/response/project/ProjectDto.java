@@ -1,12 +1,14 @@
 package ru.shchelkin.project_management.dto.response.project;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.shchelkin.project_management.commons.status.ProjectStatus;
 
 @Getter
 @Setter
-public class ProjectCardDto {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProjectDto {
     private String codeName;
 
     private String name;

@@ -6,43 +6,40 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.shchelkin.project_management.commons.exceptions.IllegalStatusException;
+import ru.shchelkin.project_management.commons.exceptions.ArgumentException;
+import ru.shchelkin.project_management.commons.exceptions.ArgumentsException;
 import ru.shchelkin.project_management.commons.exceptions.NotFoundException;
-import ru.shchelkin.project_management.commons.exceptions.NotValidException;
 import ru.shchelkin.project_management.dto.response.error.ErrorDto;
 import ru.shchelkin.project_management.dto.response.error.FieldErrorDto;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @RestControllerAdvice
 public class ExceptionApiHandler extends ResponseEntityExceptionHandler {
-
-    private final static String ERRORS_PROPERTY_NAME = "errors";
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers,
             HttpStatusCode status, WebRequest request) {
-        return getErrorResponseEntity(ex.getBindingResult());
-    }
+        List<FieldErrorDto> errors = ex.getBindingResult().getAllErrors().stream()
+                .map(objectError -> (FieldError) objectError)
+                .map(FieldErrorDto::new)
+                .toList();
 
-    @ExceptionHandler(NotValidException.class)
-    public ResponseEntity<Object> handleException(NotValidException exception) {
-        return getErrorResponseEntity(exception.getBindingResult());
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleException(ConstraintViolationException exception) {
-        final Map<String, Object> response = new HashMap<>(1);
-
-        final Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
+    public ResponseEntity<Object> handleException(ConstraintViolationException ex) {
+        final Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
 
         final List<FieldErrorDto> fieldErrors = new ArrayList<>(violations.size());
         for (var violation : violations) {
@@ -53,31 +50,31 @@ public class ExceptionApiHandler extends ResponseEntityExceptionHandler {
             fieldErrors.add(fieldError);
         }
 
-        response.put(ERRORS_PROPERTY_NAME, fieldErrors);
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(fieldErrors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorDto> handleException(NotFoundException exception) {
-        return new ResponseEntity<>(new ErrorDto(exception.getMessage()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorDto> handleException(NotFoundException ex) {
+        return new ResponseEntity<>(new ErrorDto(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(IllegalStatusException.class)
-    public ResponseEntity<ErrorDto> handleException(IllegalStatusException exception) {
-        return new ResponseEntity<>(new ErrorDto(exception.getMessage()), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorDto> handleException(IllegalStateException ex) {
+        return new ResponseEntity<>(new ErrorDto(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    private static ResponseEntity<Object> getErrorResponseEntity(BindingResult bindingResult) {
-        var response = new HashMap<String, Object>(1);
+    @ExceptionHandler(ArgumentException.class)
+    public ResponseEntity<FieldErrorDto> handleException(ArgumentException ex) {
+        return new ResponseEntity<>(new FieldErrorDto(ex.getArgumentName(), ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 
-        var errors = bindingResult.getAllErrors().stream()
-                .map(objectError -> (FieldError) objectError)
-                .map(FieldErrorDto::new)
-                .toList();
+    @ExceptionHandler(ArgumentsException.class)
+    public ResponseEntity<List<FieldErrorDto>> handleException(ArgumentsException ex) {
+        final List<FieldErrorDto> fieldErrorDtos = new ArrayList<>();
+        for (var error: ex.getArgumentsError().entrySet()) {
+            fieldErrorDtos.add(new FieldErrorDto(error.getKey(), error.getValue()));
+        }
 
-        response.put(ERRORS_PROPERTY_NAME, errors);
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(fieldErrorDtos, HttpStatus.BAD_REQUEST);
     }
 }

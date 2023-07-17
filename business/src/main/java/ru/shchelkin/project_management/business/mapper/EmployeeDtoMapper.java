@@ -1,37 +1,37 @@
 package ru.shchelkin.project_management.business.mapper;
 
+import ru.shchelkin.project_management.commons.util.CustomStringUtils;
 import ru.shchelkin.project_management.dto.request.employee.CreateEmployeeDto;
 import ru.shchelkin.project_management.dto.request.employee.UpdateEmployeeDto;
-import ru.shchelkin.project_management.dto.response.employee.EmployeeCardDto;
+import ru.shchelkin.project_management.dto.response.employee.EmployeeDto;
 import ru.shchelkin.project_management.model.Employee;
 
-public class EmployeeMapper {
-    public static EmployeeCardDto getEmployeeCardDto(Employee employee) {
-        final EmployeeCardDto employeeCardDto = new EmployeeCardDto();
+public class EmployeeDtoMapper {
+    public static EmployeeDto getEmployeeDto(Employee employee) {
+        final EmployeeDto employeeDto = new EmployeeDto();
 
-        map(employee, employeeCardDto);
+        map(employee, employeeDto);
 
-        return employeeCardDto;
+        return employeeDto;
     }
 
     public static void map(CreateEmployeeDto from, Employee to) {
-        to.setSurname(from.getSurname());
-        to.setName(from.getName());
-        to.setPatronymic(from.getPatronymic());
-        to.setJobTitle(from.getJobTitle());
-        to.setEmail(from.getEmail());
-        to.setLogin(from.getLogin());
-        to.setPassword(from.getPassword());
+        to.setSurname(from.getSurname().strip());
+        to.setName(from.getName().strip());
+        to.setPatronymic(CustomStringUtils.strip(from.getPatronymic()));
+        to.setJobTitle(CustomStringUtils.strip(from.getJobTitle()));
+        to.setEmail(CustomStringUtils.strip(from.getEmail()));
+        to.setLogin(CustomStringUtils.strip(from.getLogin()));
+        to.setPassword(CustomStringUtils.strip(from.getPassword()));
     }
 
     public static void map(UpdateEmployeeDto from, Employee to) {
         map((CreateEmployeeDto) from, to);
 
         to.setId(from.getId());
-        to.setStatus(from.getStatus());
     }
 
-    public static void map(Employee from, EmployeeCardDto to) {
+    public static void map(Employee from, EmployeeDto to) {
         to.setId(from.getId());
         to.setSurname(from.getSurname());
         to.setName(from.getName());

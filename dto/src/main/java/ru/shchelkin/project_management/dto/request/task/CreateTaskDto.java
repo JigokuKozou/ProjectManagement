@@ -1,13 +1,15 @@
 package ru.shchelkin.project_management.dto.request.task;
 
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateTaskDto {
 
     @NotBlank(message = "Project code name should not be blank")
@@ -29,7 +31,7 @@ public class CreateTaskDto {
 
     @NotNull(message = "Deadline should not be null")
     @Future(message = "Deadline should not be in past or now")
-    private LocalDateTime deadLineDate;
+    private LocalDateTime deadlineDate;
 
     @NotNull(message = "Author id should not be null")
     @Positive(message = "Author id should be positive")

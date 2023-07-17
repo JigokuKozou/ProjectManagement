@@ -39,14 +39,14 @@ public class TaskSpecification {
                 );
 
             // Deadline period
-            if (Objects.nonNull(searchDto.getDeadLineTimeStart()))
+            if (Objects.nonNull(searchDto.getDeadlineTimeStart()))
                 searchPredicates.add(
-                        criteriaBuilder.greaterThan(root.get(Task_.DEADLINE), searchDto.getDeadLineTimeStart())
+                        criteriaBuilder.greaterThan(root.get(Task_.DEADLINE), searchDto.getDeadlineTimeStart())
                 );
 
-            if (Objects.nonNull(searchDto.getDeadLineTimeEnd()))
+            if (Objects.nonNull(searchDto.getDeadlineTimeEnd()))
                 searchPredicates.add(
-                        criteriaBuilder.lessThan(root.get(Task_.DEADLINE), searchDto.getDeadLineTimeEnd())
+                        criteriaBuilder.lessThan(root.get(Task_.DEADLINE), searchDto.getDeadlineTimeEnd())
                 );
 
             // Create period

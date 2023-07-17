@@ -1,30 +1,32 @@
 package ru.shchelkin.project_management.dto.response.task;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.shchelkin.project_management.commons.status.TaskStatus;
-import ru.shchelkin.project_management.dto.response.team_member.TeamMemberCardDto;
+import ru.shchelkin.project_management.dto.response.team_member.TeamMemberDto;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class TaskCardDto {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class TaskDto {
     private Long id;
 
     private String name;
 
     private String description;
 
-    private TeamMemberCardDto executor;
+    private TeamMemberDto executor;
 
     private Integer estimateHours;
 
-    private LocalDateTime deadLineDate;
+    private LocalDateTime deadlineDate;
 
     private TaskStatus status;
 
-    private TeamMemberCardDto author;
+    private TeamMemberDto author;
 
     private LocalDateTime createdAt;
 

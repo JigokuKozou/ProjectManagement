@@ -1,6 +1,6 @@
 package ru.shchelkin.project_management.business.service.employee.impl;
 
-import ru.shchelkin.project_management.business.mapper.EmployeeMapper;
+import ru.shchelkin.project_management.business.mapper.EmployeeDtoMapper;
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 import ru.shchelkin.project_management.dao.employee.EmployeeDao;
@@ -9,7 +9,7 @@ import ru.shchelkin.project_management.dto.request.employee.GetEmployeeDto;
 import ru.shchelkin.project_management.dto.request.employee.SearchEmployeeDto;
 import ru.shchelkin.project_management.dto.request.employee.UpdateEmployeeDto;
 import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
-import ru.shchelkin.project_management.dto.response.employee.EmployeeCardDto;
+import ru.shchelkin.project_management.dto.response.employee.EmployeeDto;
 import ru.shchelkin.project_management.model.Employee;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class EmployeeServiceDao implements EmployeeService {
     }
 
     @Override
-    public EmployeeCardDto create(CreateEmployeeDto employeeDto) {
+    public EmployeeDto create(CreateEmployeeDto employeeDto) {
         var employee = Employee.builder()
                 .surname(employeeDto.getSurname().trim())
                 .name(employeeDto.getName().trim())
@@ -39,11 +39,11 @@ public class EmployeeServiceDao implements EmployeeService {
 
         dao.create(employee);
 
-        return EmployeeMapper.getEmployeeCardDto(employee);
+        return EmployeeDtoMapper.getEmployeeDto(employee);
     }
 
     @Override
-    public EmployeeCardDto get(GetEmployeeDto employeeDto) {
+    public EmployeeDto get(GetEmployeeDto employeeDto) {
         Optional<Employee> employeeOptional = Optional.empty();
 
         if (Objects.nonNull(employeeDto.getId()))
@@ -53,21 +53,21 @@ public class EmployeeServiceDao implements EmployeeService {
 
         Employee employee = employeeOptional.orElseThrow(NoSuchElementException::new);
 
-        return EmployeeMapper.getEmployeeCardDto(employee);
+        return EmployeeDtoMapper.getEmployeeDto(employee);
     }
 
     @Override
-    public List<EmployeeCardDto> getAll(SearchEmployeeDto searchEmployeeDto) {
+    public List<EmployeeDto> getAll(SearchEmployeeDto searchEmployeeDto) {
         throw new RuntimeException(); // TODO реализовать
     }
 
     @Override
-    public List<EmployeeCardDto> getAll(FilterEmployeeByTeamRoleDto filterDao) {
-        return dao.getAll(filterDao).stream().map(EmployeeMapper::getEmployeeCardDto).toList();
+    public List<EmployeeDto> getAll(FilterEmployeeByTeamRoleDto filterDao) {
+        return dao.getAll(filterDao).stream().map(EmployeeDtoMapper::getEmployeeDto).toList();
     }
 
     @Override
-    public EmployeeCardDto update(UpdateEmployeeDto employeeDto) {
+    public EmployeeDto update(UpdateEmployeeDto employeeDto) {
         var employee = Employee.builder()
                 .id(employeeDto.getId())
                 .surname(employeeDto.getSurname())
@@ -75,14 +75,13 @@ public class EmployeeServiceDao implements EmployeeService {
                 .patronymic(employeeDto.getPatronymic())
                 .jobTitle(employeeDto.getJobTitle())
                 .email(employeeDto.getEmail())
-                .status(employeeDto.getStatus())
                 .login(employeeDto.getLogin())
                 .password(employeeDto.getPassword())
                 .build();
 
         dao.update(employee);
 
-        return EmployeeMapper.getEmployeeCardDto(employee);
+        return EmployeeDtoMapper.getEmployeeDto(employee);
     }
 
     @Override

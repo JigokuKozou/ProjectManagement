@@ -1,17 +1,18 @@
-package ru.shchelkin.project_management.dto.request.filter;
+package ru.shchelkin.project_management.dto.response.team_member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.shchelkin.project_management.commons.role.TeamRole;
+import ru.shchelkin.project_management.dto.response.employee.EmployeeDto;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FilterEmployeeByTeamRoleDto {
-    private String projectCodeName;
+public class TeamMemberDto {
+    private EmployeeDto member;
 
-    private TeamRole teamRole;
+    private TeamRole role;
 }
