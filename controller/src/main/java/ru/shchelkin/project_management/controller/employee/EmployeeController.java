@@ -4,66 +4,75 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
-import ru.shchelkin.project_management.commons.exceptions.NotValidException;
-import ru.shchelkin.project_management.controller.validator.GetEmployeeDtoValidator;
+import ru.shchelkin.project_management.commons.role.TeamRole;
 import ru.shchelkin.project_management.dto.request.employee.CreateEmployeeDto;
 import ru.shchelkin.project_management.dto.request.employee.GetEmployeeDto;
 import ru.shchelkin.project_management.dto.request.employee.SearchEmployeeDto;
 import ru.shchelkin.project_management.dto.request.employee.UpdateEmployeeDto;
 import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
-import ru.shchelkin.project_management.dto.response.employee.EmployeeCardDto;
+import ru.shchelkin.project_management.dto.response.employee.EmployeeDto;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/employee")
-public class EmployeeController {
+@RequestMapping("/api/employee")
+public class EmployeeController { // TODO: Done spring doc configuration (annotation, etc.)
     private final EmployeeService employeeService;
 
-    private final GetEmployeeDtoValidator getEmployeeDtoValidator;
-
     @Autowired
-    public EmployeeController(EmployeeService employeeService,
-                              GetEmployeeDtoValidator getEmployeeDtoValidator) {
+    public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
-        this.getEmployeeDtoValidator = getEmployeeDtoValidator;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public EmployeeCardDto create(@RequestBody @Valid CreateEmployeeDto employeeDto) {
+    public EmployeeDto create(@RequestBody @Valid CreateEmployeeDto employeeDto) {
         return employeeService.create(employeeDto);
     }
 
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeCardDto get(@RequestBody @Valid GetEmployeeDto getEmployeeDto,
-                               BindingResult bindingResult) {
-        getEmployeeDtoValidator.validate(getEmployeeDto, bindingResult);
-        if (bindingResult.hasErrors()) {
-            throw new NotValidException(bindingResult);
-        }
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public EmployeeDto get(@RequestParam(required = false) Long id,
+                           @RequestParam(required = false) String login) {
+        final GetEmployeeDto getEmployeeDto = GetEmployeeDto.builder()
+                .id(id)
+                .login(login)
+                .build();
 
         return employeeService.get(getEmployeeDto);
     }
 
-    @GetMapping(value = "/search",
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<EmployeeCardDto> getAll(@RequestBody @Valid SearchEmployeeDto searchEmployeeDto) {
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EmployeeDto> getAll(@RequestParam(name = "surname", required = false) String surname,
+                                    @RequestParam(name = "name", required = false) String name,
+                                    @RequestParam(name = "patronymic", required = false) String patronymic,
+                                    @RequestParam(name = "email", required = false) String email,
+                                    @RequestParam(name = "login", required = false) String login) {
+        final SearchEmployeeDto searchEmployeeDto = SearchEmployeeDto.builder()
+                .surname(surname)
+                .name(name)
+                .patronymic(patronymic)
+                .email(email)
+                .login(login)
+                .build();
+
         return employeeService.getAll(searchEmployeeDto);
     }
 
-    @GetMapping(value = "/search-by-project",
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<EmployeeCardDto> getAll(@RequestBody @Valid FilterEmployeeByTeamRoleDto filterDao) {
+    @GetMapping(value = "/search-by-project", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EmployeeDto> getAll(@RequestParam(name = "projectCodeName", required = false) String projectCodeName,
+                                    @RequestParam(name = "teamRole", required = false) TeamRole teamRole) {
+        final FilterEmployeeByTeamRoleDto filterDao =
+                new FilterEmployeeByTeamRoleDto(projectCodeName, teamRole);
+
         return employeeService.getAll(filterDao);
     }
 
     @PutMapping(value = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeCardDto update(@RequestBody @Valid UpdateEmployeeDto employeeDto, Long id) {
+    public EmployeeDto update(@RequestBody @Valid UpdateEmployeeDto employeeDto,
+                              @PathVariable Long id) {
         employeeDto.setId(id);
         return employeeService.update(employeeDto);
     }

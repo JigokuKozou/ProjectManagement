@@ -9,12 +9,12 @@ import ru.shchelkin.project_management.business.service.project_team.ProjectTeam
 import ru.shchelkin.project_management.dto.request.project_team.AddTeamMemberDto;
 import ru.shchelkin.project_management.dto.request.project_team.GetAllTeamMemberDto;
 import ru.shchelkin.project_management.dto.request.project_team.RemoveTeamMemberDto;
-import ru.shchelkin.project_management.dto.response.team_member.TeamMemberCardDto;
+import ru.shchelkin.project_management.dto.response.team_member.TeamMemberDto;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/team")
+@RequestMapping("/api/team")
 public class ProjectTeamController {
 
     private final ProjectTeamService projectTeamService;
@@ -36,9 +36,10 @@ public class ProjectTeamController {
         projectTeamService.removeTeamMember(removeTeamMemberDto);
     }
 
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TeamMemberCardDto> getProjectTeamMembers(
-            @RequestBody @Valid GetAllTeamMemberDto getAllTeamMemberDto) {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<TeamMemberDto> getProjectTeamMembers(@RequestParam(value = "projectCodeName") String projectCodeName) {
+        final GetAllTeamMemberDto getAllTeamMemberDto = new GetAllTeamMemberDto(projectCodeName);
+
         return projectTeamService.getAll(getAllTeamMemberDto);
     }
 }
