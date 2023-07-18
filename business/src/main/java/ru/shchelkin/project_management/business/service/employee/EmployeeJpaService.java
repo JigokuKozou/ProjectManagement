@@ -1,4 +1,4 @@
-package ru.shchelkin.project_management.business.service.employee.impl;
+package ru.shchelkin.project_management.business.service.employee;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import ru.shchelkin.project_management.business.mapper.EmployeeDtoMapper;
-import ru.shchelkin.project_management.business.service.employee.EmployeeService;
 import ru.shchelkin.project_management.commons.exceptions.*;
 import ru.shchelkin.project_management.commons.exceptions.employee.EmployeeIllegalStateException;
 import ru.shchelkin.project_management.commons.exceptions.employee.EmployeeNotFoundException;
