@@ -16,6 +16,7 @@ import ru.shchelkin.project_management.commons.exceptions.task.TaskNotFoundExcep
 import ru.shchelkin.project_management.commons.exceptions.team_member.TeamMemberNotFoundException;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 import ru.shchelkin.project_management.commons.status.TaskStatus;
+import ru.shchelkin.project_management.commons.util.CustomTimeUtils;
 import ru.shchelkin.project_management.dao.employee.EmployeeRepository;
 import ru.shchelkin.project_management.dao.project.ProjectRepository;
 import ru.shchelkin.project_management.dao.task.TaskRepository;
@@ -85,7 +86,7 @@ public class TaskJpaService implements TaskService {
 
         task.setAuthor(author);
 
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = CustomTimeUtils.nowUtc();
         task.setCreatedAt(now);
         task.setUpdatedAt(now);
 
@@ -126,7 +127,7 @@ public class TaskJpaService implements TaskService {
 
         task.setDeadline(updateTaskDto.getDeadlineDate());
 
-        task.setUpdatedAt(LocalDateTime.now());
+        task.setUpdatedAt(CustomTimeUtils.nowUtc());
 
         return TaskMapper.getTaskDto(task);
     }
