@@ -57,7 +57,7 @@ public class TaskJpaService implements TaskService {
     @Override
     @Transactional
     public TaskDto create(CreateTaskDto createTaskDto) {
-        if (!StringUtils.hasText(createTaskDto.getProjectCodeName()))
+        if (!StringUtils.hasText(createTaskDto.getProjectCodename()))
             throw new BlankException("projectCodeName", "Project code name");
 
         validateName(createTaskDto.getName());
@@ -70,7 +70,7 @@ public class TaskJpaService implements TaskService {
 
         task.setStatus(TaskStatus.NEW);
 
-        final Project project = projectRepository.findByCodename(createTaskDto.getProjectCodeName())
+        final Project project = projectRepository.findByCodename(createTaskDto.getProjectCodename())
                 .orElseThrow(ProjectNotFoundException::new);
         task.setProject(project);
 
@@ -130,6 +130,15 @@ public class TaskJpaService implements TaskService {
         task.setUpdatedAt(CustomTimeUtils.nowUtc());
 
         return TaskMapper.getTaskDto(task);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TaskDto get(Long id) {
+        return TaskMapper.getTaskDto(
+                taskRepository.findById(id)
+                        .orElseThrow(TaskNotFoundException::new)
+        );
     }
 
     @Override

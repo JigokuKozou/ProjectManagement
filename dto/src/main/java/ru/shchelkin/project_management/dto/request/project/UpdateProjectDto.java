@@ -6,6 +6,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(description = "Project info for update")
+@Schema(description = "Project info to update")
 public class UpdateProjectDto extends CreateProjectDto {
 }

@@ -13,6 +13,8 @@ public interface TaskService {
 
     TaskDto update(UpdateTaskDto updateTaskDto);
 
+    TaskDto get(Long id);
+
     List<TaskDto> getAll(SearchTaskDto searchTaskDto);
 
     void changeStatus(ChangeTaskStatusDto changeTaskStatusDto);

@@ -15,12 +15,12 @@ import ru.shchelkin.project_management.commons.status.ProjectStatus;
 @Schema(description = "Project info to change status")
 public class ChangeProjectStatusDto {
 
-    @Schema(description = "Unique codename")
     @NotBlank(message = "Codename should not be blank")
     @Size(min = 1, max = 100, message = "Codename should not be more than 100 symbols")
+    @Schema(description = "Unique codename")
     private String codename;
 
-    @Schema(description = "New status")
     @NotNull(message = "Status should not be null")
+    @Schema(description = "New status")
     private ProjectStatus status;
 }

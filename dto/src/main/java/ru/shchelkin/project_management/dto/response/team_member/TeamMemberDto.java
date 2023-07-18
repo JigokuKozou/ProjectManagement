@@ -1,5 +1,6 @@
 package ru.shchelkin.project_management.dto.response.team_member;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,12 @@ import ru.shchelkin.project_management.dto.response.employee.EmployeeDto;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Team member info")
 public class TeamMemberDto {
+
+    @Schema(description = "Employee info")
     private EmployeeDto member;
 
+    @Schema(description = "Team role")
     private TeamRole role;
 }

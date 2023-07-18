@@ -73,12 +73,12 @@ public class ProjectTeamJpaService implements ProjectTeamService{
     @Override
     @Transactional
     public void removeTeamMember(@NonNull RemoveTeamMemberDto removeTeamMemberDto) {
-        validateProjectCodename(removeTeamMemberDto.getProjectCodeName());
+        validateProjectCodename(removeTeamMemberDto.getProjectCodename());
         validateEmployeeId(removeTeamMemberDto.getEmployeeId());
 
         final Employee employee = getEmployee(removeTeamMemberDto.getEmployeeId());
 
-        final ProjectTeam team = getProjectTeam(removeTeamMemberDto.getProjectCodeName());
+        final ProjectTeam team = getProjectTeam(removeTeamMemberDto.getProjectCodename());
 
         TeamMember removableMember = null;
         for (var member : team.getMembers()) {

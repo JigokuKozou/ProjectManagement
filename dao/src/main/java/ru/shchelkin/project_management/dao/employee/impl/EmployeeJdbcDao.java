@@ -3,7 +3,7 @@ package ru.shchelkin.project_management.dao.employee.impl;
 import lombok.NonNull;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 import ru.shchelkin.project_management.dao.employee.EmployeeDao;
-import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
+import ru.shchelkin.project_management.dto.request.employee.FilterEmployeeByTeamRoleDto;
 import ru.shchelkin.project_management.model.Employee;
 
 import java.sql.*;
@@ -153,7 +153,7 @@ public class EmployeeJdbcDao implements EmployeeDao {
                             "FROM " + TABLE_NAME +" e JOIN team_member tm ON e.id = tm.employee_id " +
                             "JOIN project_team pt ON tm.team_id = pt.id " +
                             "JOIN project p on pt.project_id = p.id " +
-                            "WHERE p.code_name = '" + filterDao.getProjectCodeName() + "' " +
+                            "WHERE p.code_name = '" + filterDao.getProjectCodename() + "' " +
                             "AND tm.role=" + filterDao.getTeamRole().ordinal());
 
             ResultSet resultSet = statement.executeQuery();

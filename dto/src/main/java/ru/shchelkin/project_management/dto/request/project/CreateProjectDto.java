@@ -15,14 +15,14 @@ import lombok.Setter;
 @Schema(description = "Project info to create")
 public class CreateProjectDto {
 
-    @Schema(description = "Unique codename")
     @NotBlank(message = "Codename should not be blank")
     @Size(min = 1, max = 100, message = "Codename should not be more than 100 symbols")
+    @Schema(description = "Unique codename")
     private String codename;
 
-    @Schema(description = "Name")
     @NotBlank(message = "Name should not be blank")
     @Size(min = 1, max = 100, message = "Name should not be more than 100 symbols")
+    @Schema(description = "Name")
     private String name;
 
     @Schema(description = "Description")
