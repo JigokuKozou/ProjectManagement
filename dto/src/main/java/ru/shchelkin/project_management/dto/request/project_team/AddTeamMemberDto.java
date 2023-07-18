@@ -14,9 +14,9 @@ import ru.shchelkin.project_management.commons.role.TeamRole;
 @AllArgsConstructor
 public class AddTeamMemberDto {
 
-    @NotBlank(message = "Project code name should not be blank")
-    @Size(max = 100, message = "Project code name should not be more than 100 symbols")
-    private String projectCodeName;
+    @NotBlank(message = "Project codename should not be blank")
+    @Size(max = 100, message = "Project codename should not be more than 100 symbols")
+    private String projectCodename;
 
     @NotNull(message = "Employee id should not be null")
     @Positive(message = "Employee id should be positive")

@@ -1,4 +1,4 @@
-package ru.shchelkin.project_management.dto.request.filter;
+package ru.shchelkin.project_management.dto.request.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import ru.shchelkin.project_management.commons.role.TeamRole;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FilterEmployeeByTeamRoleDto {
-    private String projectCodeName;
+    private String projectCodename;
 
     private TeamRole teamRole;
 }

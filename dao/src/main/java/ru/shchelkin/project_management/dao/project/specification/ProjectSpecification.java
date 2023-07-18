@@ -22,7 +22,7 @@ public class ProjectSpecification {
                         searchPredicate,
                         criteriaBuilder.or(
                                 criteriaBuilder.like(
-                                        criteriaBuilder.lower(root.get(Project_.CODE_NAME)),
+                                        criteriaBuilder.lower(root.get(Project_.CODENAME)),
                                         "%" + searchDto.getFilter().toLowerCase() + "%"
                                 ),
                                 criteriaBuilder.like(

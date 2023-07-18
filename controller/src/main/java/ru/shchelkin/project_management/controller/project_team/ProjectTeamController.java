@@ -1,5 +1,7 @@
 package ru.shchelkin.project_management.controller.project_team;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,8 @@ import ru.shchelkin.project_management.dto.response.team_member.TeamMemberDto;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/team")
+@RequestMapping("/api/teams")
+@Tag(name = "ProjectTeamController", description = "Controller for project teams")
 public class ProjectTeamController {
 
     private final ProjectTeamService projectTeamService;
@@ -37,8 +40,10 @@ public class ProjectTeamController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TeamMemberDto> getProjectTeamMembers(@RequestParam(value = "projectCodeName") String projectCodeName) {
-        final GetAllTeamMemberDto getAllTeamMemberDto = new GetAllTeamMemberDto(projectCodeName);
+    public List<TeamMemberDto> getProjectTeamMembers(
+            @Parameter(description = "Project unique codename")
+            @RequestParam(value = "projectCodename") String projectCodename) {
+        final GetAllTeamMemberDto getAllTeamMemberDto = new GetAllTeamMemberDto(projectCodename);
 
         return projectTeamService.getAll(getAllTeamMemberDto);
     }

@@ -15,13 +15,13 @@ public class ProjectMapper {
     }
 
     public static void map(CreateProjectDto from, Project to) {
-        to.setCodeName(CustomStringUtils.strip(from.getCodeName()));
+        to.setCodename(CustomStringUtils.strip(from.getCodename()));
         to.setName(CustomStringUtils.strip(from.getName()));
         to.setDescription(CustomStringUtils.strip(from.getDescription()));
     }
 
     public static void map(Project from, ProjectDto to) {
-        to.setCodeName(from.getCodeName());
+        to.setCodename(from.getCodename());
         to.setName(from.getName());
         to.setDescription(from.getDescription());
         to.setStatus(from.getStatus());

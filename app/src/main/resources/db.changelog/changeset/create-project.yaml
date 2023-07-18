@@ -14,7 +14,7 @@ databaseChangeLog:
                     nullable: false
                     primaryKey: true
               - column:
-                  name: code_name
+                  name: codename
                   type: VARCHAR(100)
                   constraints:
                     nullable: false

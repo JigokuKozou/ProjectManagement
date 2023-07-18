@@ -24,10 +24,10 @@ public class Project {
     @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Code name should not be blank")
-    @Size(max = 100, message = "Code name should not be more than 100 symbols")
-    @Column(name = "code_name")
-    private String codeName;
+    @NotBlank(message = "Codename should not be blank")
+    @Size(max = 100, message = "Codename should not be more than 100 symbols")
+    @Column(name = "codename")
+    private String codename;
 
     @NotBlank(message = "Name should not be blank")
     @Size(max = 100, message = "Name should not be more than 100 symbols")

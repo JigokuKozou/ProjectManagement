@@ -70,7 +70,7 @@ public class TaskJpaService implements TaskService {
 
         task.setStatus(TaskStatus.NEW);
 
-        final Project project = projectRepository.findByCodeName(createTaskDto.getProjectCodeName())
+        final Project project = projectRepository.findByCodename(createTaskDto.getProjectCodeName())
                 .orElseThrow(ProjectNotFoundException::new);
         task.setProject(project);
 

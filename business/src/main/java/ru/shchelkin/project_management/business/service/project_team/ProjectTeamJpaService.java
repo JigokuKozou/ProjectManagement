@@ -49,13 +49,13 @@ public class ProjectTeamJpaService implements ProjectTeamService{
     @Override
     @Transactional
     public void addTeamMember(@NonNull AddTeamMemberDto addTeamMemberDto) {
-        validateProjectCodeName(addTeamMemberDto.getProjectCodeName());
+        validateProjectCodename(addTeamMemberDto.getProjectCodename());
         validateEmployeeId(addTeamMemberDto.getEmployeeId());
 
         if (Objects.isNull(addTeamMemberDto.getRole()))
             throw new NullException("role");
 
-        final Project project = getProject(addTeamMemberDto.getProjectCodeName());
+        final Project project = getProject(addTeamMemberDto.getProjectCodename());
 
         final Employee employee = getEmployee(addTeamMemberDto.getEmployeeId());
 
@@ -73,7 +73,7 @@ public class ProjectTeamJpaService implements ProjectTeamService{
     @Override
     @Transactional
     public void removeTeamMember(@NonNull RemoveTeamMemberDto removeTeamMemberDto) {
-        validateProjectCodeName(removeTeamMemberDto.getProjectCodeName());
+        validateProjectCodename(removeTeamMemberDto.getProjectCodeName());
         validateEmployeeId(removeTeamMemberDto.getEmployeeId());
 
         final Employee employee = getEmployee(removeTeamMemberDto.getEmployeeId());
@@ -98,17 +98,17 @@ public class ProjectTeamJpaService implements ProjectTeamService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<TeamMemberDto> getAll(GetAllTeamMemberDto getAllTeamMemberDto) {
-        final ProjectTeam team = getProjectTeam(getAllTeamMemberDto.getProjectCodeName());
+    public List<TeamMemberDto> getAll(@NonNull GetAllTeamMemberDto getAllTeamMemberDto) {
+        final ProjectTeam team = getProjectTeam(getAllTeamMemberDto.getProjectCodename());
 
         return team.getMembers().stream()
                 .map(TeamMemberMapper::getTeamMemberDto)
                 .toList();
     }
 
-    private void validateProjectCodeName(String projectCodeName) {
-        if (!StringUtils.hasText(projectCodeName))
-            throw new BlankException("projectCodeName", "Project code name");
+    private void validateProjectCodename(String projectCodename) {
+        if (!StringUtils.hasText(projectCodename))
+            throw new BlankException("projectCodename", "Project codename");
     }
 
     private void validateEmployeeId(Long id) {
@@ -123,14 +123,14 @@ public class ProjectTeamJpaService implements ProjectTeamService{
         return teamRepository.save(projectTeam);
     }
 
-    private ProjectTeam getProjectTeam(String projectCodeName) {
-        final Project project = getProject(projectCodeName);
+    private ProjectTeam getProjectTeam(String projectCodename) {
+        final Project project = getProject(projectCodename);
 
         return getProjectTeam(project);
     }
 
-    private Project getProject(String projectCodeName) {
-        return projectRepository.findByCodeName(projectCodeName)
+    private Project getProject(String projectCodename) {
+        return projectRepository.findByCodename(projectCodename)
                 .orElseThrow(ProjectNotFoundException::new);
     }
 

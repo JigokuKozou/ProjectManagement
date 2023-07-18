@@ -38,11 +38,11 @@ public class ProjectJpaService implements ProjectService{
     @Override
     @Transactional
     public ProjectDto create(CreateProjectDto createProjectDto) {
-        validateCodeName(createProjectDto.getCodeName());
+        validateCodeName(createProjectDto.getCodename());
         validateName(createProjectDto.getName());
 
-        projectRepository.findByCodeName(createProjectDto.getCodeName())
-                .ifPresent(another -> { throw new NotUniqueException("codeName", "Code name"); });
+        projectRepository.findByCodename(createProjectDto.getCodename())
+                .ifPresent(another -> { throw new NotUniqueException("codename"); });
 
         final Project project = new Project();
 
@@ -56,10 +56,10 @@ public class ProjectJpaService implements ProjectService{
     @Override
     @Transactional
     public ProjectDto update(UpdateProjectDto updateProjectDto) {
-        validateCodeName(updateProjectDto.getCodeName());
+        validateCodeName(updateProjectDto.getCodename());
         validateName(updateProjectDto.getName());
 
-        final Project project = getByCodeName(updateProjectDto.getCodeName());
+        final Project project = getByCodeName(updateProjectDto.getCodename());
 
         ProjectMapper.map(updateProjectDto, project);
 
@@ -77,7 +77,7 @@ public class ProjectJpaService implements ProjectService{
     @Override
     @Transactional
     public void changeStatus(ChangeProjectStatusDto changeProjectStatusDto) {
-        final Project project = getByCodeName(changeProjectStatusDto.getCodeName());
+        final Project project = getByCodeName(changeProjectStatusDto.getCodename());
 
         if (isAvailableChangeStatus(project.getStatus(), changeProjectStatusDto.getStatus()))
             project.setStatus(changeProjectStatusDto.getStatus());
@@ -86,7 +86,7 @@ public class ProjectJpaService implements ProjectService{
     }
 
     private Project getByCodeName(String codeName) {
-        return projectRepository.findByCodeName(codeName)
+        return projectRepository.findByCodename(codeName)
                 .orElseThrow(ProjectNotFoundException::new);
     }
 
@@ -103,10 +103,10 @@ public class ProjectJpaService implements ProjectService{
         codeName = codeName.strip();
 
         if (!StringUtils.hasText(codeName))
-            throw new BlankException("codeName", "Code name");
+            throw new BlankException("codename");
 
         if (codeName.length() > CODE_NAME_MAX_LENGTH)
-            throw new MaxLengthException("codeName", CODE_NAME_MAX_LENGTH, "Code name");
+            throw new MaxLengthException("codename", CODE_NAME_MAX_LENGTH);
     }
 
     private void validateName(String name) {

@@ -1,5 +1,6 @@
 package ru.shchelkin.project_management.dto.request.project;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -11,15 +12,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Project info to create")
 public class CreateProjectDto {
 
-    @NotBlank(message = "Code name should not be blank")
-    @Size(max = 100, message = "Code name should not be more than 100 symbols")
-    private String codeName;
+    @Schema(description = "Unique codename")
+    @NotBlank(message = "Codename should not be blank")
+    @Size(min = 1, max = 100, message = "Codename should not be more than 100 symbols")
+    private String codename;
 
+    @Schema(description = "Name")
     @NotBlank(message = "Name should not be blank")
-    @Size(max = 100, message = "Name should not be more than 100 symbols")
+    @Size(min = 1, max = 100, message = "Name should not be more than 100 symbols")
     private String name;
 
+    @Schema(description = "Description")
     private String description;
 }

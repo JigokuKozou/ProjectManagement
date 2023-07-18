@@ -1,6 +1,5 @@
 package ru.shchelkin.project_management.dto.request.project;
 
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchProjectDto {
-    @Size(max = 100, message = "Filter should not be more than 100 symbols")
     private String filter;
 
     private List<ProjectStatus> statuses;
