@@ -80,15 +80,20 @@ public class ProjectTeamJpaService implements ProjectTeamService{
 
         final ProjectTeam team = getProjectTeam(removeTeamMemberDto.getProjectCodeName());
 
+        TeamMember removableMember = null;
         for (var member : team.getMembers()) {
             if (member.getEmployee() == employee) {
-                team.remove(member);
-
-                teamMemberRepository.delete(member);
+                removableMember = member;
+                break;
             }
         }
 
-        throw new TeamMemberNotFoundException();
+        if (Objects.nonNull(removableMember)) {
+            team.remove(removableMember);
+
+            teamMemberRepository.delete(removableMember);
+        }
+        else throw new TeamMemberNotFoundException();
     }
 
     @Override
