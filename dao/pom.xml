@@ -23,7 +23,6 @@
             <artifactId>model</artifactId>
             <version>${revision}${changeList}</version>
         </dependency>
-
         <dependency>
             <groupId>ru.shchelkin</groupId>
             <artifactId>dto</artifactId>
@@ -31,9 +30,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.5.4</version>
+            <version>${postgresql.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,8 +1,6 @@
 package ru.shchelkin.project_management.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,12 +20,9 @@ public class ProjectTeam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Id should be positive")
     @Column(name = "id")
     private Long id;
 
-
-    @NotNull(message = "Project should not be null")
     @OneToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private Project project;
