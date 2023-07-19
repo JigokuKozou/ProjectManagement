@@ -1,7 +1,10 @@
 package ru.shchelkin.project_management.dto.request.task;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -27,11 +30,6 @@ public class CreateTaskDto {
     @Schema(description = "Description")
     private String description;
 
-    @NotNull(message = "Author id should not be null")
-    @Positive(message = "Author id should be positive")
-    @Schema(description = "Employee author unique identifier")
-    private Long authorId;
-
     @Positive(message = "Executor id should be positive")
     @Schema(description = "Employee executor unique identifier")
     private Long executorId;
@@ -42,7 +40,6 @@ public class CreateTaskDto {
     private Integer estimateHours;
 
     @NotNull(message = "Deadline should not be null")
-    @Future(message = "Deadline should not be in past or now")
-    @Schema(description = "Deadline date")
+    @Schema(description = "Deadline date (UTC time zone)")
     private LocalDateTime deadlineDate;
 }

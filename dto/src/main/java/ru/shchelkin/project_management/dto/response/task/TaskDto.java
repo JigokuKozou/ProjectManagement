@@ -33,15 +33,15 @@ public class TaskDto {
     @Schema(description = "Estimate hours")
     private Integer estimateHours;
 
-    @Schema(description = "Deadline date")
+    @Schema(description = "Deadline date (UTC time zone)")
     private LocalDateTime deadlineDate;
 
     @Schema(description = "Status")
     private TaskStatus status;
 
-    @Schema(description = "Created at")
+    @Schema(description = "Created at (UTC time zone)")
     private LocalDateTime createdAt;
 
-    @Schema(description = "Updated at")
+    @Schema(description = "Updated at (UTC time zone)")
     private LocalDateTime updatedAt;
 }

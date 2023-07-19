@@ -3,6 +3,7 @@ package ru.shchelkin.project_management.business.service.employee;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static ru.shchelkin.project_management.commons.util.CustomStringUtils.strip;
+
 @Service
 public class EmployeeJpaService implements EmployeeService {
 
@@ -34,9 +37,12 @@ public class EmployeeJpaService implements EmployeeService {
 
     private final EmployeeRepository repository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public EmployeeJpaService(EmployeeRepository repository) {
+    public EmployeeJpaService(EmployeeRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -50,7 +56,7 @@ public class EmployeeJpaService implements EmployeeService {
         validateLoginAndPassword(createEmployeeDto.getLogin(), createEmployeeDto.getPassword(), null);
 
         Employee employee = new Employee();
-        EmployeeDtoMapper.map(createEmployeeDto, employee);
+        map(createEmployeeDto, employee);
 
         employee.setStatus(EmployeeStatus.ACTIVE);
 
@@ -112,7 +118,7 @@ public class EmployeeJpaService implements EmployeeService {
             throw new EmployeeIllegalStateException("Employee with id:%d is deleted."
                     .formatted(updateEmployeeDto.getId()));
 
-        EmployeeDtoMapper.map(updateEmployeeDto, employee);
+        map(updateEmployeeDto, employee);
 
         return EmployeeDtoMapper.getEmployeeDto(employee);
     }
@@ -129,6 +135,23 @@ public class EmployeeJpaService implements EmployeeService {
             throw new EmployeeIllegalStateException("Employee with id:%d was already deleted.".formatted(id));
 
         employee.setStatus(EmployeeStatus.DELETED);
+    }
+
+    private void map(CreateEmployeeDto from, Employee to) {
+        to.setSurname(from.getSurname().strip());
+        to.setName(from.getName().strip());
+        to.setPatronymic(strip(from.getPatronymic()));
+        to.setJobTitle(strip(from.getJobTitle()));
+        to.setEmail(strip(from.getEmail()));
+
+        final String login = strip(from.getLogin());
+        final String password = strip(from.getPassword());
+        if (!login.isEmpty()) {
+            to.setLogin(login);
+
+            if (Objects.nonNull(password))
+                to.setPassword(passwordEncoder.encode(password));
+        }
     }
 
     private void validateId(Long id) {

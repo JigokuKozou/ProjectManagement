@@ -2,7 +2,6 @@ package ru.shchelkin.project_management.dto.request.employee;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -27,24 +26,24 @@ public class CreateEmployeeDto {
     @Schema(description = "Name")
     private String name;
 
-    @Max(value = 30, message = "Patronymic should not be more than 30 symbols")
+    @Size(max = 30, message = "Patronymic should not be more than 30 symbols")
     @Schema(description = "Patronymic")
     private String patronymic;
 
-    @Max(value = 100, message = "Job title should not be more than 20 symbols")
+    @Size(max = 100, message = "Job title should not be more than 20 symbols")
     @Schema(description = "Job title")
     private String jobTitle;
 
     @Email(message = "Email should be valid")
-    @Max(value = 256, message = "Email should not be more than 256 symbols")
+    @Size(max = 256, message = "Email should not be more than 256 symbols")
     @Schema(description = "Email")
     private String email;
 
-    @Max(value = 20, message = "Login should not be more than 20 symbols")
+    @Size(max = 20, message = "Login should not be more than 20 symbols")
     @Schema(description = "Unique login")
     private String login;
 
-    @Max(value = 128, message = "Password should not be more than 128 symbols")
+    @Size(max = 128, message = "Password should not be more than 128 symbols")
     @Schema(description = "Password")
     private String password;
 }

@@ -1,6 +1,7 @@
 package ru.shchelkin.project_management.business.service.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -63,7 +64,6 @@ public class TaskJpaService implements TaskService {
         validateName(createTaskDto.getName());
         validateEstimateHours(createTaskDto.getEstimateHours());
         validateDeadlineDate(createTaskDto.getDeadlineDate());
-        validateAuthorId(createTaskDto.getAuthorId());
 
         final Task task = new Task();
         TaskMapper.map(createTaskDto, task);
@@ -81,8 +81,8 @@ public class TaskJpaService implements TaskService {
             task.setExecutor(executor);
         }
 
-        final TeamMember author = getTeamMember(task.getProject().getTeam(),
-                createTaskDto.getAuthorId());
+        final String authorLogin = SecurityContextHolder.getContext().getAuthentication().getName();
+        final TeamMember author = getTeamMember(task.getProject().getTeam(), authorLogin);
 
         task.setAuthor(author);
 
@@ -183,13 +183,8 @@ public class TaskJpaService implements TaskService {
         if (Objects.isNull(deadline))
             throw new NullException("deadlineDate", "Deadline date");
 
-        if (!deadline.isAfter(LocalDateTime.now()))
-            throw new ArgumentException("deadlineDate", "Deadline date should not be in the past or now");
-    }
-
-    public void validateAuthorId(Long authorId) {
-        if (Objects.isNull(authorId))
-            throw new NullException("authorId", "Author id");
+        if (!deadline.isAfter(CustomTimeUtils.nowUtc()))
+            throw new ArgumentException("deadlineDate", "Deadline date should not be in the past or now.");
     }
 
     private Task getTask(Long id) {
@@ -201,6 +196,17 @@ public class TaskJpaService implements TaskService {
         final Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(EmployeeNotFoundException::new);
 
+        return getTeamMember(projectTeam, employee);
+    }
+
+    private TeamMember getTeamMember(ProjectTeam projectTeam, String login) {
+        final Employee employee = employeeRepository.findByLogin(login)
+                .orElseThrow(EmployeeNotFoundException::new);
+
+        return getTeamMember(projectTeam, employee);
+    }
+
+    private TeamMember getTeamMember(ProjectTeam projectTeam, Employee employee) {
         return teamMemberRepository.findByTeamAndEmployee(projectTeam, employee)
                 .orElseThrow(TeamMemberNotFoundException::new);
     }

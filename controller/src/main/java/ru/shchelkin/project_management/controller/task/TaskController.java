@@ -85,7 +85,7 @@ public class TaskController {
         return taskService.getAll(searchTaskDto);
     }
 
-    @Operation(summary = "Change task")
+    @Operation(summary = "Change task status")
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void changeStatus(@RequestBody @Valid ChangeTaskStatusDto changeTaskStatusDto,

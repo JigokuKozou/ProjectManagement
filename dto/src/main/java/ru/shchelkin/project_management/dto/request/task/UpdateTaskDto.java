@@ -2,7 +2,10 @@ package ru.shchelkin.project_management.dto.request.task;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -37,7 +40,6 @@ public class UpdateTaskDto {
     private Integer estimateHours;
 
     @NotNull(message = "Deadline should not be null")
-    @Future(message = "Deadline should not be in past or now")
-    @Schema(description = "Deadline date")
+    @Schema(description = "Deadline date (UTC time zone)")
     private LocalDateTime deadlineDate;
 }
