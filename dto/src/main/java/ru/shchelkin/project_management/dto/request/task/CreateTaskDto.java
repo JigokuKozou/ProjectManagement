@@ -1,5 +1,6 @@
 package ru.shchelkin.project_management.dto.request.task;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +30,9 @@ public class CreateTaskDto {
 
     @Schema(description = "Description")
     private String description;
+
+    @Hidden
+    private String authorLogin;
 
     @Positive(message = "Executor id should be positive")
     @Schema(description = "Employee executor unique identifier")

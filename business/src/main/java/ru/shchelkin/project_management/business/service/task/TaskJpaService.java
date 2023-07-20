@@ -1,7 +1,6 @@
 package ru.shchelkin.project_management.business.service.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -81,8 +80,7 @@ public class TaskJpaService implements TaskService {
             task.setExecutor(executor);
         }
 
-        final String authorLogin = SecurityContextHolder.getContext().getAuthentication().getName();
-        final TeamMember author = getTeamMember(task.getProject().getTeam(), authorLogin);
+        final TeamMember author = getTeamMember(task.getProject().getTeam(), createTaskDto.getAuthorLogin());
 
         task.setAuthor(author);
 

@@ -16,6 +16,7 @@ import ru.shchelkin.project_management.dto.request.task.SearchTaskDto;
 import ru.shchelkin.project_management.dto.request.task.UpdateTaskDto;
 import ru.shchelkin.project_management.dto.response.task.TaskDto;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,7 +35,8 @@ public class TaskController {
     @Operation(summary = "Create task")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskDto create(@RequestBody @Valid CreateTaskDto createTaskDto) {
+    public TaskDto create(@RequestBody @Valid CreateTaskDto createTaskDto, Principal principal) {
+        createTaskDto.setAuthorLogin(principal.getName());
         return taskService.create(createTaskDto);
     }
 

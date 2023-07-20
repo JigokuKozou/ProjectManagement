@@ -2,7 +2,6 @@ package ru.shchelkin.project_management.business.service.security;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,7 +44,7 @@ public class UserService implements UserDetailsService {
         Employee employee = employeeRepository.findByLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found."));
 
-        return new User(username, employee.getPassword(), Collections.emptyList());
+        return new AccountDetails(employee, Collections.emptyList());
     }
 
     @PostConstruct
