@@ -11,14 +11,18 @@ import java.util.Objects;
 public class ProjectSpecification {
     public static Specification<Project> get(SearchProjectDto searchDto) {
         return (root, query, criteriaBuilder) -> {
-            Predicate searchPredicate = root.get(Project_.STATUS).in(searchDto.getStatuses());
+            Predicate searchPredicate = criteriaBuilder.and(); // True
+
+            if (Objects.nonNull(searchDto.getStatuses())) {
+                searchPredicate = root.get(Project_.STATUS).in(searchDto.getStatuses());
+            }
 
             if (Objects.nonNull(searchDto.getFilter())) {
                 searchPredicate = criteriaBuilder.and(
                         searchPredicate,
                         criteriaBuilder.or(
                                 criteriaBuilder.like(
-                                        criteriaBuilder.lower(root.get(Project_.CODE_NAME)),
+                                        criteriaBuilder.lower(root.get(Project_.CODENAME)),
                                         "%" + searchDto.getFilter().toLowerCase() + "%"
                                 ),
                                 criteriaBuilder.like(

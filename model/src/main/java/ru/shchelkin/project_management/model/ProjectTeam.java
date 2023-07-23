@@ -30,11 +30,17 @@ public class ProjectTeam {
     @OneToMany(mappedBy = "team")
     private Set<TeamMember> members;
 
-    public boolean add(TeamMember member) {
+    public boolean add(TeamMember newMember) {
         if (Objects.isNull(members))
             members = new HashSet<>();
 
-        return members.add(member);
+        for (TeamMember member: members) {
+            if ((member == newMember) ||
+                    (member.getEmployee() == newMember.getEmployee()))
+                return false;
+        }
+
+        return members.add(newMember);
     }
 
     public boolean remove(TeamMember member) {

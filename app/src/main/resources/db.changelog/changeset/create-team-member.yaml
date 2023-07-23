@@ -18,24 +18,19 @@ databaseChangeLog:
                   type: BIGINT
                   constraints:
                     nullable: false
+                    foreignKeyName: team_member_employee_fk
+                    referencedTableName: employee
+                    referencedColumnNames: id
               - column:
                   name: team_id
                   type: BIGINT
                   constraints:
                     nullable: false
+                    foreignKeyName: team_member_team_fk
+                    referencedTableName: project_team
+                    referencedColumnNames: id
               - column:
                   name: role
                   type: SMALLINT
                   constraints:
                     nullable: false
-            foreignKeys:
-              - foreignKey:
-                  name: team_member_employee_fk
-                  referencedTableName: employee
-                  referencedColumnNames: id
-                  baseColumnNames: employee_id
-              - foreignKey:
-                  name: team_member_team_fk
-                  referencedTableName: project_team
-                  referencedColumnNames: id
-                  baseColumnNames: team_id

@@ -20,11 +20,6 @@
     <dependencies>
         <dependency>
             <groupId>ru.shchelkin</groupId>
-            <artifactId>dto</artifactId>
-            <version>${revision}${changeList}</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.shchelkin</groupId>
             <artifactId>controller</artifactId>
             <version>${revision}${changeList}</version>
         </dependency>
@@ -32,6 +27,14 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>${maven-assembly-plugin.version}</version>
+            <type>maven-plugin</type>
         </dependency>
     </dependencies>
 

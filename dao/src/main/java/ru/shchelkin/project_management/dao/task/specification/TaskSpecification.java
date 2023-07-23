@@ -39,25 +39,25 @@ public class TaskSpecification {
                 );
 
             // Deadline period
-            if (Objects.nonNull(searchDto.getDeadLineTimeStart()))
+            if (Objects.nonNull(searchDto.getDeadlineStart()))
                 searchPredicates.add(
-                        criteriaBuilder.greaterThan(root.get(Task_.DEADLINE), searchDto.getDeadLineTimeStart())
+                        criteriaBuilder.greaterThan(root.get(Task_.DEADLINE), searchDto.getDeadlineStart())
                 );
 
-            if (Objects.nonNull(searchDto.getDeadLineTimeEnd()))
+            if (Objects.nonNull(searchDto.getDeadlineEnd()))
                 searchPredicates.add(
-                        criteriaBuilder.lessThan(root.get(Task_.DEADLINE), searchDto.getDeadLineTimeEnd())
+                        criteriaBuilder.lessThan(root.get(Task_.DEADLINE), searchDto.getDeadlineEnd())
                 );
 
             // Create period
-            if (Objects.nonNull(searchDto.getStartTaskTimeStart()))
+            if (Objects.nonNull(searchDto.getCreatedAtStart()))
                 searchPredicates.add(
-                        criteriaBuilder.greaterThan(root.get(Task_.CREATED_AT), searchDto.getStartTaskTimeStart())
+                        criteriaBuilder.greaterThan(root.get(Task_.CREATED_AT), searchDto.getCreatedAtStart())
                 );
 
-            if (Objects.nonNull(searchDto.getStartTaskTimeEnd()))
+            if (Objects.nonNull(searchDto.getCreatedAtEnd()))
                 searchPredicates.add(
-                        criteriaBuilder.lessThan(root.get(Task_.CREATED_AT), searchDto.getStartTaskTimeEnd())
+                        criteriaBuilder.lessThan(root.get(Task_.CREATED_AT), searchDto.getCreatedAtEnd())
                 );
 
             return query.where(criteriaBuilder.and(searchPredicates.toArray(Predicate[]::new)))

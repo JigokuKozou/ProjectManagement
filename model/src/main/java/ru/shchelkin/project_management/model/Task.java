@@ -27,6 +27,10 @@ public class Task {
     private String description;
 
     @ManyToOne
+    @JoinColumn(name = "project_id", referencedColumnName = "id")
+    private Project project;
+
+    @ManyToOne
     @JoinColumn(name = "executor_id", referencedColumnName = "id")
     private TeamMember executor;
 

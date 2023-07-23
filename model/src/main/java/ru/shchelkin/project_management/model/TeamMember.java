@@ -1,6 +1,5 @@
 package ru.shchelkin.project_management.model;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -4,8 +4,8 @@ import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.ObjectUtils;
 import ru.shchelkin.project_management.commons.status.EmployeeStatus;
+import ru.shchelkin.project_management.dto.request.employee.FilterEmployeeByTeamRoleDto;
 import ru.shchelkin.project_management.dto.request.employee.SearchEmployeeDto;
-import ru.shchelkin.project_management.dto.request.filter.FilterEmployeeByTeamRoleDto;
 import ru.shchelkin.project_management.model.*;
 
 import java.util.ArrayList;
@@ -51,9 +51,9 @@ public final class EmployeeSpecification {
 
             List<Predicate> predicates = new ArrayList<>(2);
 
-            if (!ObjectUtils.isEmpty(filterDao.getProjectCodeName()))
+            if (!ObjectUtils.isEmpty(filterDao.getProjectCodename()))
                 predicates.add(criteriaBuilder.equal(
-                        projectJoin.get(Project_.CODE_NAME), filterDao.getProjectCodeName()
+                        projectJoin.get(Project_.CODENAME), filterDao.getProjectCodename()
                 ));
 
             if (Objects.nonNull(filterDao.getTeamRole()))

@@ -1,7 +1,6 @@
 package ru.shchelkin.project_management.dto.request.task;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.shchelkin.project_management.commons.status.TaskStatus;
 
 import java.time.LocalDateTime;
@@ -9,7 +8,11 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SearchTaskDto {
+
     private String name;
 
     private List<TaskStatus> statuses;
@@ -18,11 +21,11 @@ public class SearchTaskDto {
 
     private Long authorId;
 
-    private LocalDateTime deadLineTimeStart;
+    private LocalDateTime deadlineStart;
 
-    private LocalDateTime deadLineTimeEnd;
+    private LocalDateTime deadlineEnd;
 
-    private LocalDateTime startTaskTimeStart;
+    private LocalDateTime createdAtStart;
 
-    private LocalDateTime startTaskTimeEnd;
+    private LocalDateTime createdAtEnd;
 }

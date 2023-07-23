@@ -19,8 +19,8 @@ public class Project {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "code_name")
-    private String codeName;
+    @Column(name = "codename")
+    private String codename;
 
     @Column(name = "name")
     private String name;
@@ -28,6 +28,10 @@ public class Project {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "status")
     private ProjectStatus status;
+
+    @OneToOne(mappedBy = "project")
+    private ProjectTeam team;
 }

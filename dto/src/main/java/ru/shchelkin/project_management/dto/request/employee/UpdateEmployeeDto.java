@@ -1,17 +1,19 @@
 package ru.shchelkin.project_management.dto.request.employee;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.shchelkin.project_management.commons.status.EmployeeStatus;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(description = "Employee info to update")
 public class UpdateEmployeeDto extends CreateEmployeeDto {
-    @Positive(message = "Id should be positive")
-    private Long id;
 
-    @NotNull(message = "Status should not be null")
-    private EmployeeStatus status;
+    @Hidden
+    private Long id;
 }

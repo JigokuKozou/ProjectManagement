@@ -18,9 +18,7 @@ databaseChangeLog:
                   type: BIGINT
                   constraints:
                     nullable: false
-            foreignKeys:
-              - foreignKey:
-                  name: project_team_project_fk
-                  referencedTableName: project
-                  referencedColumnNames: id
-                  baseColumnNames: project_id
+                    unique: true
+                    foreignKeyName: project_team_project_fk
+                    referencedTableName: project
+                    referencedColumnNames: id
