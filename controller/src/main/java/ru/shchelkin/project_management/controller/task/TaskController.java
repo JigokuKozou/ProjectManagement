@@ -2,6 +2,7 @@ package ru.shchelkin.project_management.controller.task;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.shchelkin.project_management.business.service.task.TaskService;
 import ru.shchelkin.project_management.commons.status.TaskStatus;
+import ru.shchelkin.project_management.controller.config.SecurityConfig;
 import ru.shchelkin.project_management.dto.request.task.ChangeTaskStatusDto;
 import ru.shchelkin.project_management.dto.request.task.CreateTaskDto;
 import ru.shchelkin.project_management.dto.request.task.SearchTaskDto;
@@ -23,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tasks")
 @Tag(name = "TaskController", description = "Controller for tasks")
+@SecurityRequirement(name = SecurityConfig.SECURITY_CONFIG_NAME)
 public class TaskController {
 
     private final TaskService taskService;

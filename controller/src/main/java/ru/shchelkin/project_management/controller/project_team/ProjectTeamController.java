@@ -2,6 +2,7 @@ package ru.shchelkin.project_management.controller.project_team;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.shchelkin.project_management.business.service.project_team.ProjectTeamService;
+import ru.shchelkin.project_management.controller.config.SecurityConfig;
 import ru.shchelkin.project_management.dto.request.project_team.AddTeamMemberDto;
 import ru.shchelkin.project_management.dto.request.project_team.GetAllTeamMemberDto;
 import ru.shchelkin.project_management.dto.request.project_team.RemoveTeamMemberDto;
@@ -19,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/teams")
 @Tag(name = "ProjectTeamController", description = "Controller for project teams")
+@SecurityRequirement(name = SecurityConfig.SECURITY_CONFIG_NAME)
 public class ProjectTeamController {
 
     private final ProjectTeamService projectTeamService;

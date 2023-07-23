@@ -34,6 +34,7 @@
 
         <openApi.version>2.1.0</openApi.version>
         <lombok.version>1.18.28</lombok.version>
+        <jjwt-api.version>0.11.5</jjwt-api.version>
         <postgresql.version>42.5.4</postgresql.version>
         <liquibase.version>4.20.0</liquibase.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>

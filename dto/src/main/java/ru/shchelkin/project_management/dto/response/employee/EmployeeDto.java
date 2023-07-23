@@ -36,7 +36,4 @@ public class EmployeeDto {
 
     @Schema(description = "Unique login")
     private String login;
-
-    @Schema(description = "Password")
-    private String password;
 }

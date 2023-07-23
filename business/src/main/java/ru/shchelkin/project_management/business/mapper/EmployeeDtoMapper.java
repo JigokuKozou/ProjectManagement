@@ -21,6 +21,5 @@ public class EmployeeDtoMapper {
         to.setEmail(from.getEmail());
         to.setStatus(from.getStatus());
         to.setLogin(from.getLogin());
-        to.setPassword(from.getPassword());
     }
 }

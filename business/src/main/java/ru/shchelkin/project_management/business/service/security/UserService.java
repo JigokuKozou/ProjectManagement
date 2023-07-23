@@ -17,9 +17,11 @@ import java.util.Collections;
 @Service
 public class UserService implements UserDetailsService {
 
-    private final EmployeeRepository employeeRepository;
+    @Value("${security.admin.login:admin}")
+    private String adminLogin;
 
-    private final PasswordEncoder passwordEncoder;
+    @Value("${security.admin.password}")
+    private String adminPassword;
 
     @Value("${security.admin.surname:Admin}")
     private String adminSurname;
@@ -27,11 +29,9 @@ public class UserService implements UserDetailsService {
     @Value("${security.admin.name:Admin}")
     private String adminName;
 
-    @Value("${security.admin.login:admin}")
-    private String adminLogin;
+    private final EmployeeRepository employeeRepository;
 
-    @Value("${security.admin.password}")
-    private String adminPassword;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
@@ -48,16 +48,17 @@ public class UserService implements UserDetailsService {
     }
 
     @PostConstruct
-    @Transactional
     public void initAdmin() {
         employeeRepository.findByLogin(adminLogin)
-                .orElseGet(() -> employeeRepository.saveAndFlush(Employee.builder()
-                                .surname(adminSurname)
-                                .name(adminName)
+                .orElseGet(() -> employeeRepository
+                        .saveAndFlush(Employee.builder()
                                 .login(adminLogin)
                                 .password(passwordEncoder.encode(adminPassword))
+                                .surname(adminSurname)
+                                .name(adminName)
                                 .status(EmployeeStatus.ACTIVE)
-                                .build())
+                                .build()
+                        )
                 );
     }
 }

@@ -2,6 +2,7 @@ package ru.shchelkin.project_management.controller.project;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.shchelkin.project_management.business.service.project.ProjectService;
 import ru.shchelkin.project_management.commons.status.ProjectStatus;
+import ru.shchelkin.project_management.controller.config.SecurityConfig;
 import ru.shchelkin.project_management.dto.request.project.ChangeProjectStatusDto;
 import ru.shchelkin.project_management.dto.request.project.CreateProjectDto;
 import ru.shchelkin.project_management.dto.request.project.SearchProjectDto;
@@ -21,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/projects")
 @Tag(name = "ProjectController", description = "Controller for projects")
+@SecurityRequirement(name = SecurityConfig.SECURITY_CONFIG_NAME)
 public class ProjectController {
 
     private final ProjectService projectService;

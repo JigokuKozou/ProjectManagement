@@ -2,6 +2,7 @@ package ru.shchelkin.project_management.controller.employee;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.shchelkin.project_management.business.service.employee.EmployeeService;
 import ru.shchelkin.project_management.commons.role.TeamRole;
+import ru.shchelkin.project_management.controller.config.SecurityConfig;
 import ru.shchelkin.project_management.dto.request.employee.*;
 import ru.shchelkin.project_management.dto.response.employee.EmployeeDto;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/employees")
 @Tag(name = "EmployeeController", description = "Controller for employees")
+@SecurityRequirement(name = SecurityConfig.SECURITY_CONFIG_NAME)
 public class EmployeeController {
     private final EmployeeService employeeService;
 
