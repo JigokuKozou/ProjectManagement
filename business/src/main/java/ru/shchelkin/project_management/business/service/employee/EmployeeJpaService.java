@@ -1,6 +1,7 @@
 package ru.shchelkin.project_management.business.service.employee;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,7 @@ import java.util.Optional;
 
 import static ru.shchelkin.project_management.commons.util.CustomStringUtils.strip;
 
+@Slf4j
 @Service
 public class EmployeeJpaService implements EmployeeService {
 
@@ -60,7 +62,11 @@ public class EmployeeJpaService implements EmployeeService {
 
         employee.setStatus(EmployeeStatus.ACTIVE);
 
-        return EmployeeDtoMapper.getEmployeeDto(repository.saveAndFlush(employee));
+        employee = repository.saveAndFlush(employee);
+
+        log.info("Created new employee with id:" + employee.getId());
+
+        return EmployeeDtoMapper.getEmployeeDto(employee);
     }
 
     @Override
@@ -114,11 +120,16 @@ public class EmployeeJpaService implements EmployeeService {
         validateLoginAndPassword(updateEmployeeDto.getLogin(), updateEmployeeDto.getPassword(),
                 employee.getId());
 
-        if (employee.getStatus() == EmployeeStatus.DELETED)
-            throw new EmployeeIllegalStateException("Employee with id:%d is deleted."
-                    .formatted(updateEmployeeDto.getId()));
+        if (employee.getStatus() == EmployeeStatus.DELETED) {
+            String errorMessage = "Employee with id:%d has been deleted and cannot be updated."
+                    .formatted(updateEmployeeDto.getId());
+            log.warn(errorMessage);
+            throw new EmployeeIllegalStateException(errorMessage);
+        }
 
         map(updateEmployeeDto, employee);
+
+        log.info("Updated employee with id:" + employee.getId());
 
         return EmployeeDtoMapper.getEmployeeDto(employee);
     }
@@ -131,10 +142,15 @@ public class EmployeeJpaService implements EmployeeService {
         Employee employee = repository.findById(id)
                 .orElseThrow(EmployeeNotFoundException::new);
 
-        if (employee.getStatus() == EmployeeStatus.DELETED)
-            throw new EmployeeIllegalStateException("Employee with id:%d was already deleted.".formatted(id));
+        if (employee.getStatus() == EmployeeStatus.DELETED) {
+            String errorMessage = "Employee with id:%d was already deleted.".formatted(id);
+            log.warn(errorMessage);
+            throw new EmployeeIllegalStateException(errorMessage);
+        }
 
         employee.setStatus(EmployeeStatus.DELETED);
+
+        log.info("Deleted employee with id:" + employee.getId());
     }
 
     private void map(CreateEmployeeDto from, Employee to) {
