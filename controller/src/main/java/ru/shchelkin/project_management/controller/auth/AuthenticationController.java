@@ -23,7 +23,7 @@ public class AuthenticationController {
         this.authService = authService;
     }
 
-    @Operation(description = "Get JWT(Bearer) token")
+    @Operation(summary = "Get JWT(Bearer) token")
     @PostMapping("/authenticate")
     public AuthenticationResponseDto authenticate(@RequestBody AuthenticationRequestDto authRequest) {
         return authService.authenticate(authRequest);
