@@ -10,19 +10,27 @@
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
             </PatternLayout>
         </Console>
+
         <File name="EMPLOYEE_LOG" fileName="./logs/employee.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+        <File name="PROJECT_LOG" fileName="./logs/project.log">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </File>
     </Appenders>
 
     <Loggers>
+        <Root level="info">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+
         <Logger name = "ru.shchelkin.project_management.business.service.employee.EmployeeJpaService"
                 level="info">
             <AppenderRef ref="EMPLOYEE_LOG"/>
         </Logger>
-
-        <Root level="warn">
-            <AppenderRef ref="STDOUT"/>
-        </Root>
+        <Logger name = "ru.shchelkin.project_management.business.service.project.ProjectJpaService"
+                level="info">
+            <AppenderRef ref="PROJECT_LOG"/>
+        </Logger>
     </Loggers>
 </Configuration>

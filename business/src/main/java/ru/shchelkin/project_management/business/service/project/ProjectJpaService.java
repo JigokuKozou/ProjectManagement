@@ -1,5 +1,6 @@
 package ru.shchelkin.project_management.business.service.project;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import ru.shchelkin.project_management.model.Project;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ProjectJpaService implements ProjectService{
 
@@ -44,13 +46,17 @@ public class ProjectJpaService implements ProjectService{
         projectRepository.findByCodename(createProjectDto.getCodename())
                 .ifPresent(another -> { throw new NotUniqueException("codename"); });
 
-        final Project project = new Project();
+        Project project = new Project();
 
         ProjectMapper.map(createProjectDto, project);
 
         project.setStatus(ProjectStatus.DRAFT);
 
-        return ProjectMapper.getProjectDto(projectRepository.saveAndFlush(project));
+        project = projectRepository.saveAndFlush(project);
+
+        log.info("Created project with id:%d.".formatted(project.getId()));
+
+        return ProjectMapper.getProjectDto(project);
     }
 
     @Override
@@ -62,6 +68,8 @@ public class ProjectJpaService implements ProjectService{
         final Project project = getByCodeName(updateProjectDto.getCodename());
 
         ProjectMapper.map(updateProjectDto, project);
+
+        log.info("Updated project with id:%d.".formatted(project.getId()));
 
         return ProjectMapper.getProjectDto(project);
     }
@@ -79,10 +87,18 @@ public class ProjectJpaService implements ProjectService{
     public void changeStatus(ChangeProjectStatusDto changeProjectStatusDto) {
         final Project project = getByCodeName(changeProjectStatusDto.getCodename());
 
-        if (isAvailableChangeStatus(project.getStatus(), changeProjectStatusDto.getStatus()))
+        if (isAvailableChangeStatus(project.getStatus(), changeProjectStatusDto.getStatus())) {
             project.setStatus(changeProjectStatusDto.getStatus());
-        else
+
+            log.info("Changed status project with id:%d to %s."
+                    .formatted(project.getId(), project.getStatus().toString()));
+        }
+        else {
+            log.warn("Changing status project with id:%d from %s to %s is invalid."
+                    .formatted(project.getId(), project.getStatus().toString(), changeProjectStatusDto.getStatus()));
+
             throw new ProjectIllegalStatusException(project.getStatus(), changeProjectStatusDto.getStatus());
+        }
     }
 
     private Project getByCodeName(String codeName) {
