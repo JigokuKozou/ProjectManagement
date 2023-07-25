@@ -17,6 +17,9 @@
         <File name="PROJECT_LOG" fileName="./logs/project.log">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </File>
+        <File name="AUTHENTICATION_LOG" fileName="./logs/authentication.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
     </Appenders>
 
     <Loggers>
@@ -31,6 +34,10 @@
         <Logger name = "ru.shchelkin.project_management.business.service.project.ProjectJpaService"
                 level="info">
             <AppenderRef ref="PROJECT_LOG"/>
+        </Logger>
+        <Logger name = "ru.shchelkin.project_management.business.service.auth.AuthenticationService"
+                level="info">
+            <AppenderRef ref="AUTHENTICATION_LOG"/>
         </Logger>
     </Loggers>
 </Configuration>
