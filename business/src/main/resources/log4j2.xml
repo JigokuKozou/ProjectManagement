@@ -20,6 +20,15 @@
         <File name="AUTHENTICATION_LOG" fileName="./logs/authentication.log">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </File>
+        <File name="PROJECT_TEAM_LOG" fileName="./logs/project_team.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+        <File name="JWT_SERVICE_LOG" fileName="./logs/jwt_service.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+        <File name="USER_SERVICE_LOG" fileName="./logs/user_service.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
     </Appenders>
 
     <Loggers>
@@ -27,6 +36,10 @@
             <AppenderRef ref="STDOUT"/>
         </Root>
 
+        <Logger name = "ru.shchelkin.project_management.business.service.auth.AuthenticationService"
+                level="info">
+            <AppenderRef ref="AUTHENTICATION_LOG"/>
+        </Logger>
         <Logger name = "ru.shchelkin.project_management.business.service.employee.EmployeeJpaService"
                 level="info">
             <AppenderRef ref="EMPLOYEE_LOG"/>
@@ -35,9 +48,17 @@
                 level="info">
             <AppenderRef ref="PROJECT_LOG"/>
         </Logger>
-        <Logger name = "ru.shchelkin.project_management.business.service.auth.AuthenticationService"
+        <Logger name = "ru.shchelkin.project_management.business.service.project_team.ProjectTeamJpaService"
                 level="info">
-            <AppenderRef ref="AUTHENTICATION_LOG"/>
+            <AppenderRef ref="PROJECT_TEAM_LOG"/>
+        </Logger>
+        <Logger name = "ru.shchelkin.project_management.business.service.security.JwtService"
+                level="info">
+            <AppenderRef ref="JWT_SERVICE_LOG"/>
+        </Logger>
+        <Logger name = "ru.shchelkin.project_management.business.service.security.UserService"
+                level="info">
+            <AppenderRef ref="USER_SERVICE_LOG"/>
         </Logger>
     </Loggers>
 </Configuration>

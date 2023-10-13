@@ -1,6 +1,7 @@
 package ru.shchelkin.project_management.business.service.project_team;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import ru.shchelkin.project_management.model.TeamMember;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class ProjectTeamJpaService implements ProjectTeamService{
     private final ProjectTeamRepository teamRepository;
@@ -67,6 +69,9 @@ public class ProjectTeamJpaService implements ProjectTeamService{
         member.setEmployee(employee);
         member.setRole(addTeamMemberDto.getRole());
 
+        log.info("Employee with id:%d has been added to project \"%s\""
+                .formatted(employee.getId(), project.getCodename()));
+
         teamMemberRepository.saveAndFlush(member);
     }
 
@@ -87,13 +92,19 @@ public class ProjectTeamJpaService implements ProjectTeamService{
                 break;
             }
         }
+        if (Objects.isNull(removableMember)) {
+            log.warn("Employee with id:%d is not a member of project team \"%s\"."
+                    .formatted(employee.getId(), removeTeamMemberDto.getProjectCodename()));
 
-        if (Objects.nonNull(removableMember)) {
-            team.remove(removableMember);
-
-            teamMemberRepository.delete(removableMember);
+            throw new TeamMemberNotFoundException();
         }
-        else throw new TeamMemberNotFoundException();
+
+        team.remove(removableMember);
+
+        teamMemberRepository.delete(removableMember);
+
+        log.info("Employee with id:%d has been removed from project \"%s\"."
+                .formatted(employee.getId(), removeTeamMemberDto.getProjectCodename()));
     }
 
     @Override

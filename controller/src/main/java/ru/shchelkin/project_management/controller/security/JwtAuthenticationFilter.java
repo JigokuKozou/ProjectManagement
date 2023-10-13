@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.shchelkin.project_management.business.service.security.JwtService;
-import ru.shchelkin.project_management.commons.exceptions.auth.JwtInvalidException;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -41,9 +40,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             authenticate(request, authHeader);
-        }
-        catch (JwtInvalidException ex) {
-            // TODO: log
         }
         finally {
             filterChain.doFilter(request, response);

@@ -1,10 +1,12 @@
 package ru.shchelkin.project_management.business.service.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.shchelkin.project_management.commons.exceptions.auth.JwtInvalidException;
@@ -16,6 +18,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 
+@Slf4j
 @Service
 public class JwtService {
 
@@ -59,8 +62,17 @@ public class JwtService {
                     .parseClaimsJws(token)
                     .getBody();
         }
+        catch (ExpiredJwtException ex) {
+            log.warn(ex.getMessage());
+
+            throw ex;
+        }
         catch (RuntimeException ex) {
-            throw new JwtInvalidException("Jwt is not valid", ex);
+            final String errorMessage = "JWT token is not valid.";
+
+            log.warn(errorMessage);
+
+            throw new JwtInvalidException(errorMessage, ex);
         }
     }
 

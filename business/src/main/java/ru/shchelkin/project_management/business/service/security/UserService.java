@@ -1,6 +1,7 @@
 package ru.shchelkin.project_management.business.service.security;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +14,9 @@ import ru.shchelkin.project_management.dao.employee.EmployeeRepository;
 import ru.shchelkin.project_management.model.Employee;
 
 import java.util.Collections;
+import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserService implements UserDetailsService {
 
@@ -41,10 +44,19 @@ public class UserService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Employee employee = employeeRepository.findByLogin(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
+        Optional<Employee> employee = employeeRepository.findByLogin(username);
 
-        return new AccountDetails(employee, Collections.emptyList());
+        if (employee.isEmpty()) {
+            final String errorMessage = "Employee with login:\"%s\" not found.".formatted(username);
+
+            log.warn(errorMessage);
+
+            throw new UsernameNotFoundException(errorMessage);
+        }
+
+        log.info("Employee with login: \"%s\" founded.".formatted(username));
+
+        return new AccountDetails(employee.get(), Collections.emptyList());
     }
 
     @PostConstruct
